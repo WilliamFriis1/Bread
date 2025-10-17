@@ -1,14 +1,20 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class NpcRandomizerTest : MonoBehaviour
 {
     public Queue<GameObject> NpcOrder = new();
     [SerializeField] List<ToSpawn> NpcList;
+    [SerializeField] bool RandomEventsOn = false;
+    [SerializeField] List<RandomEvent> RandomEvents;
+
+    [SerializeField] GameObject EventObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,11 +59,47 @@ public class NpcRandomizerTest : MonoBehaviour
         if (NpcOrder.Count > 0)
         {
             GameObject newNPC = Instantiate(NpcOrder.Dequeue());
-            newNPC.GetComponent<TestNPC>().OnEnd.AddListener(SpawnNext);
+
+            if (RandomEventsOn)
+            {
+                float totalWeights = 0;
+
+                foreach (RandomEvent randomEvent in RandomEvents)
+                    totalWeights += randomEvent.Odds;
+
+                foreach (RandomEvent randomEvent in RandomEvents)
+                {
+                    if (Random.Range(0, totalWeights) < randomEvent.Odds)
+                    {
+                        newNPC.GetComponent<TestNPC>().OnEnd.AddListener(() => randomEvent.Event.Invoke());
+                        break;
+                    }
+
+                    totalWeights -= randomEvent.Odds;
+                }
+
+            }
+
+            else
+                newNPC.GetComponent<TestNPC>().OnEnd.AddListener(SpawnNext);
         }
 
         else
             Debug.Log("All NPC's spawned");
+    }
+
+    public void TestEvent()
+    {
+        StartCoroutine(Event1());
+    }
+
+
+    IEnumerator Event1()
+    {
+        GameObject spawnedObject = Instantiate(EventObject);
+        yield return new WaitForSeconds(3);
+        Destroy(spawnedObject);
+        SpawnNext();
     }
 }
 
@@ -66,4 +108,11 @@ public class ToSpawn
 {
     public GameObject Npc;
     public int Amount;
+}
+
+[Serializable]
+public class RandomEvent
+{
+    public UnityEvent Event;
+    public float Odds;
 }
