@@ -14,8 +14,8 @@ public class ButtonTest
     private string m_expectedScene;
     private string m_buttonName;
 
-    [UnityTest]
-    public IEnumerator RunTest()
+    [UnitySetUp]
+    public IEnumerator SetUp()
     {
         m_sceneForTest = "MainMenu";
         m_expectedScene = "GameScene";
@@ -27,9 +27,13 @@ public class ButtonTest
 
         SceneManager.LoadScene(m_sceneForTest);
 
-        yield return new WaitForSeconds(1f); 
-        yield return null; 
+        yield return new WaitForSeconds(1f);
+        yield return null;
+    }
 
+    [UnityTest]
+    public IEnumerator RunTest()
+    {
         GameObject buttonObj = GameObject.Find(m_buttonName);
         Assert.IsNotNull(buttonObj, $"Button '{m_buttonName}' not found in scene '{m_sceneForTest}'");
 
@@ -46,8 +50,6 @@ public class ButtonTest
             yield return null;
         }
 
-        SceneManager.sceneLoaded -= OnSceneLoad;
-
         Assert.IsTrue(m_targetSceneLoaded,
             $"Target scene '{m_expectedScene}' was not loaded after clicking button '{m_buttonName}'");
 
@@ -61,5 +63,12 @@ public class ButtonTest
         {
             m_targetSceneLoaded = true;
         }
+    }
+
+    [UnityTearDown]
+    public IEnumerator TearDown()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoad;
+        yield return null;
     }
 }
