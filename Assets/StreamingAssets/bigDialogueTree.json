@@ -1,0 +1,247 @@
+{
+  "start": "npc_gingerbread_root",
+  "nodes": [
+    {
+      "id": "npc_gingerbread_root",
+      "speaker": "narrator",
+      "text": "You see all the gingerbread people in line ready to gamble away their chocolate chips. Nature is healing.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Chat", "gotoNode": "npc_gingerbread_chat" },
+        { "id": "c2", "text": "Seek information", "gotoNode": "npc_gingerbread_seek" },
+        { "id": "c3", "text": "Leave", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_chat",
+      "speaker": "gingerbread",
+      "text": "I can already feel the sweet taste of victory.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Talk more", "gotoNode": "npc_gingerbread_chat2" },
+        { "id": "c2", "text": "Leave", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_chat2",
+      "speaker": "gingerbread",
+      "text": "My finances are crumbling exactly like an extra soft cookie.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Sympathize", "gotoNode": "npc_gingerbread_chat3" },
+        { "id": "c2", "text": "Mock him", "gotoNode": "npc_gingerbread_chat_fail" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_chat3",
+      "speaker": "gingerbread",
+      "text": "Triple chocolate cookie? More like triple my income. BRING IT ON!",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "End chat", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_chat_fail",
+      "speaker": "gingerbread",
+      "text": "I eat excessive amounts of sugar to cope with the fact that my wife left me and took the kids because of my gambling addiction. So as I was saying, I would like to place a bet…",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Leave awkwardly", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_seek",
+      "speaker": "player",
+      "text": "It’s 5 o’clock, time to spill the tea. Have you got something?",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Ask about rumours", "gotoNode": "npc_gingerbread_rumour" },
+        { "id": "c2", "text": "End", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_rumour",
+      "speaker": "gingerbread",
+      "text": "One of them desserts smells a bit fishy, don't you think? You wouldn’t happen to hear something ‘bout this?",
+      "end": false,
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Spread rumour: Vanilla",
+          "action": "SPREAD_RUMOUR",
+          "successChance": 0.75,
+          "gotoOnSuccess": "npc_gingerbread_rumour_vanilla_success",
+          "gotoOnFail": "npc_gingerbread_rumour_vanilla_fail"
+        },
+        { "id": "c2", "text": "Nevermind", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_rumour_vanilla_success",
+      "speaker": "gingerbread",
+      "text": "I’ve heard that Vanilla’s been putting extra sugar in the mix. You didn’t hear that from me.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Leave", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_rumour_vanilla_fail",
+      "speaker": "gingerbread",
+      "text": "They look at you strangely and say: 'Who told you that?' Nothing useful there.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Leave", "gotoNode": "npc_gingerbread_end" }
+      ]
+    },
+    {
+      "id": "npc_gingerbread_end",
+      "speaker": "narrator",
+      "text": "You step away from the gingerbread character.",
+      "end": true,
+      "choices": []
+    },
+    {
+      "id": "npc_dealer_root",
+      "speaker": "narrator",
+      "text": "You see a suspicious-looking fortune cookie standing in line. Who knows what message this peculiar dessert can bring you.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Talk to the fortune cookie", "gotoNode": "npc_dealer_intro" },
+        { "id": "c2", "text": "Leave", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_intro",
+      "speaker": "fortune cookie",
+      "text": "Psss kid. Listen, you’re surrounded by all these sugary desserts, they’re gonna give you a sugar addiction. Why not skip straight to the last part? I got the right thing for you. Baking flour.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Ask what kind of flour", "gotoNode": "npc_dealer_flour_offer" },
+        { "id": "c2", "text": "No thanks", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_flour_offer",
+      "speaker": "fortune cookie",
+      "text": "Pssss. You over there. Wanna know the secret to every pastry recipe? Wanna know how these fighters got so good? Two words. Baking. Flour. You in?",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Buy flour", "action": "BUY_FLOUR", "successChance": 0.9, "gotoOnSuccess": "npc_dealer_buy_success", "gotoOnFail": "npc_dealer_buy_fail" },
+        { "id": "c2", "text": "Ask for discount", "gotoNode": "npc_dealer_discount" },
+        { "id": "c3", "text": "Leave", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_buy_success",
+      "speaker": "fortune cookie",
+      "text": "I got whachu need. Hand over the chips. Pleasure doing business with you.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Leave", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_buy_fail",
+      "speaker": "fortune cookie",
+      "text": "You sure you got the chips for that? Don't try to pull crumbs on me, pal.",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Apologize", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_discount",
+      "speaker": "fortune cookie",
+      "text": "Why so stressed ma guy, you need to feel more flour power *wink wink*",
+      "end": false,
+      "choices": [
+        { "id": "c1", "text": "Buy anyway", "gotoNode": "npc_dealer_buy_success" },
+        { "id": "c2", "text": "Back off slowly", "gotoNode": "npc_dealer_end" }
+      ]
+    },
+    {
+      "id": "npc_dealer_end",
+      "speaker": "narrator",
+      "text": "The strange fortune cookie watches you leave, its crisp shell gleaming under the neon bakery lights.",
+      "end": true,
+      "choices": []
+    },
+    {
+  "id": "npc_coach_root",
+  "speaker": "narrator",
+  "text": "One of the coaches is approaching you, maybe they’re here to check the stats… oh, they’re here to gamble. That checks out.",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Talk to the coach", "gotoNode": "npc_coach_intro" },
+    { "id": "c2", "text": "Leave", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_intro",
+  "speaker": "coach",
+  "text": "Every coach knows that the best way to support your fighter is through gambling. It shows an unbreakable bond. By that I mean I’ll break their bones if they lose.",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Ask for information", "gotoNode": "npc_coach_seek" },
+    { "id": "c2", "text": "Offer a bribe", "gotoNode": "npc_coach_bribe" },
+    { "id": "c3", "text": "Leave", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_seek",
+  "speaker": "player",
+  "text": "They say knowledge means power, and money also means power… by the law of commutativity, knowledge must mean money.",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Ask again, seriously", "gotoNode": "npc_coach_seek_reply" },
+    { "id": "c2", "text": "Leave", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_seek_reply",
+  "speaker": "coach",
+  "text": "Boy, you think I started baking yesterday? I see right through your dirty little scheme…",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Apologize", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_bribe",
+  "speaker": "player",
+  "text": "It would be such a shame if, let’s say, they found something in the lockers. Indeed a great shame that might require… financial compensation.",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Offer flour as payment", "action": "BRIBE_COACH", "successChance": 0.7, "gotoOnSuccess": "npc_coach_bribe_success", "gotoOnFail": "npc_coach_bribe_fail" },
+    { "id": "c2", "text": "Nevermind", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_bribe_success",
+  "speaker": "coach",
+  "text": "Interesting. I see what you want me to do, kid. If you’ve got the chips, I’ll do it.",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Thank him", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_bribe_fail",
+  "speaker": "coach",
+  "text": "You want me to betray my fighter? Unacceptable! The only suspicious white powder they’re gonna find is my homemade protein!",
+  "end": false,
+  "choices": [
+    { "id": "c1", "text": "Back off quickly", "gotoNode": "npc_coach_end" }
+  ]
+},
+{
+  "id": "npc_coach_end",
+  "speaker": "narrator",
+  "text": "You leave the coach to his protein shake and poor life choices.",
+  "end": true,
+  "choices": []
+}
+  ]
+}
