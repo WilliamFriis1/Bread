@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -11,22 +9,16 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI speakerText;
     [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private Transform choicesContainer;
-    [SerializeField] private Button choiceButtonPrefab;
+    [SerializeField] private GameObject choiceButtonPrefab;
+    [SerializeField] private Transform choiceContainer;
 
     private DialogueTree currentTree;
     private DialogueNode currentNode;
-    private System.Random rng = new System.Random();
 
-    private void Awake()
-    {
-        dialoguePanel.SetActive(false);
-    }
-
-    // Load the entire big dialogue tree JSON from StreamingAssets and start from a node id
     public void LoadTreeFromFile(string filename)
     {
         string path = Path.Combine(Application.streamingAssetsPath, filename);
+
         if (!File.Exists(path))
         {
             Debug.LogError("Dialogue file not found at: " + path);
@@ -35,111 +27,66 @@ public class DialogueManager : MonoBehaviour
 
         string json = File.ReadAllText(path);
         currentTree = DialogueTree.FromJson(json);
+        Debug.Log("Dialogue tree loaded: " + filename);
     }
 
-    public void StartDialogueAt(string startNodeId)
+    public void StartDialogueAt(string nodeId)
     {
         if (currentTree == null)
         {
-            Debug.LogError("Call LoadTreeFromFile(...) before starting dialogue.");
+            Debug.LogError("No dialogue tree loaded!");
             return;
         }
 
-        if (!currentTree.nodes.ContainsKey(startNodeId))
-        {
-            Debug.LogError($"Start node '{startNodeId}' not found in tree.");
-            return;
-        }
-
-        ShowNode(startNodeId);
         dialoguePanel.SetActive(true);
+        ShowNode(currentTree.GetNode(nodeId));
     }
 
-    private void ClearChoices()
+    private void ShowNode(DialogueNode node)
     {
-        foreach (Transform t in choicesContainer) Destroy(t.gameObject);
-    }
-
-    private void ShowNode(string nodeId)
-    {
-        ClearChoices();
-
-        if (!currentTree.nodes.TryGetValue(nodeId, out currentNode))
+        if (node == null)
         {
-            Debug.LogError("Node not found: " + nodeId);
-            EndDialogue();
+            Debug.LogError("Dialogue node not found!");
             return;
         }
 
-        speakerText.text = string.IsNullOrEmpty(currentNode.speaker) ? "" : currentNode.speaker;
-        dialogueText.text = currentNode.text;
+        currentNode = node;
+        speakerText.text = node.speaker;
+        dialogueText.text = node.text;
 
-        if (currentNode.end)
+        foreach (Transform child in choiceContainer)
+            Destroy(child.gameObject);
+
+        foreach (DialogueChoice choice in node.choices)
         {
-            var endBtn = Instantiate(choiceButtonPrefab, choicesContainer);
-            endBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Close";
-            endBtn.onClick.AddListener(EndDialogue);
-            return;
-        }
+            GameObject button = Instantiate(choiceButtonPrefab, choiceContainer);
+            var text = button.GetComponentInChildren<TextMeshProUGUI>();
+            text.text = choice.text;
 
-        if (currentNode.choices == null || currentNode.choices.Count == 0)
-        {
-            var okBtn = Instantiate(choiceButtonPrefab, choicesContainer);
-            okBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Continue";
-            okBtn.onClick.AddListener(EndDialogue);
-            return;
-        }
-
-        foreach (var ch in currentNode.choices)
-        {
-            var btn = Instantiate(choiceButtonPrefab, choicesContainer);
-            var label = btn.GetComponentInChildren<TextMeshProUGUI>();
-            label.text = ch.text;
-
-            // Capture loop variable
-            DialogueChoice capturedChoice = ch;
-
-            btn.onClick.AddListener(() =>
-            {
-                ProcessChoice(capturedChoice);
-            });
+            button.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnChoiceSelected(choice));
         }
     }
 
-    private void ProcessChoice(DialogueChoice choice)
+    private void OnChoiceSelected(DialogueChoice choice)
     {
-        // Choice that has an action with success/fail routing:
         if (!string.IsNullOrEmpty(choice.action))
         {
-            float chance = Mathf.Clamp01(choice.successChance);
-            float roll = (float)rng.NextDouble();
-            bool success = roll <= chance;
+            Debug.Log("Action triggered: " + choice.action);
 
-            if (success && !string.IsNullOrEmpty(choice.gotoOnSuccess))
-            {
-                ShowNode(choice.gotoOnSuccess);
-                return;
-            }
-            else if (!success && !string.IsNullOrEmpty(choice.gotoOnFail))
-            {
-                ShowNode(choice.gotoOnFail);
-                return;
-            }
-
-        }
-
-        if (!string.IsNullOrEmpty(choice.gotoNode))
-        {
-            ShowNode(choice.gotoNode);
+            if (Random.value <= choice.successChance)
+                ShowNode(currentTree.GetNode(choice.gotoOnSuccess));
+            else
+                ShowNode(currentTree.GetNode(choice.gotoOnFail));
         }
         else
         {
-            EndDialogue();
+            ShowNode(currentTree.GetNode(choice.gotoNode));
         }
     }
 
     public void EndDialogue()
     {
         dialoguePanel.SetActive(false);
+        currentNode = null;
     }
 }
