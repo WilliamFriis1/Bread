@@ -64,6 +64,42 @@ public class OddsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
+        {
+            selectFighterA.gameObject.SetActive(true);
+            selectFighterB.gameObject.SetActive(true);
+        }
+        else
+        {
+            selectFighterA.gameObject.SetActive(false);
+            selectFighterB.gameObject.SetActive(false);
+        }
+        if (GameManager.Instance.Phase == GameManager.GamePhase.PlaceBet)
+        {
+            betInputField.gameObject.SetActive(true);
+        }
+        else
+        {
+            betInputField.gameObject.SetActive(false);
+        }
+        if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
+        {
+            increaseOddsButton.gameObject.SetActive(true);
+            decreaseOddsButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            increaseOddsButton.gameObject.SetActive(false);
+            decreaseOddsButton.gameObject.SetActive(false);
+        }
+        if(GameManager.Instance.Phase == GameManager.GamePhase.RoundEnd)
+        {
+            fightButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            fightButton.gameObject.SetActive(false);
+        }
     }
 
 /// <summary>
