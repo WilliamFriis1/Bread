@@ -3,7 +3,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Fighter selectedFighter;
-    int chips;
+    int chips = 100;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,6 +16,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void Awake()
+    {
+        GameManager.Instance.Player = this;
     }
 
     public Fighter GetSelectedFighter() { return selectedFighter; }

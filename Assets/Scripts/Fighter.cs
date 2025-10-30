@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Fighter : MonoBehaviour
+public class Fighter
 {
     Texture2D texture;
     string fighterName;
@@ -9,18 +9,6 @@ public class Fighter : MonoBehaviour
     public Fighter(string name)
     {
         fighterName = name;
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void SetAsWinner()

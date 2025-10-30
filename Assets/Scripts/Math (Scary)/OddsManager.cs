@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OddsManager : MonoBehaviour
 {
@@ -26,14 +27,22 @@ public class OddsManager : MonoBehaviour
     int payout;
     float multiplier = 1f;
 
+    [SerializeField] InputField betInputField;
+    [SerializeField] Button increaseOddsButton;
+    [SerializeField] Button decreaseOddsButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        fighterList = new List<Fighter>();
+        
     }
 
     private void Awake()
     {
+        fighterList = new List<Fighter>();
+        
+        GameManager.Instance.OddsManager = this;
+        player = GameManager.Instance.Player;
         InitFighterList();
     }
 
@@ -67,6 +76,7 @@ public class OddsManager : MonoBehaviour
     void InitFighterList()
     {
         //Clear list, so we can make sure only 4 fighters are on there.
+        //list is null for some reason no clue why
         fighterList.Clear();
 
         fighterList.Add(butterBuster);
@@ -121,6 +131,8 @@ public class OddsManager : MonoBehaviour
 
     void SetMultiplier()
     {
+        if (player.GetSelectedFighter() == null) return;
+
         if (player.GetSelectedFighter() == FighterA)
         {
             multiplier = 1f + currentOdds;
