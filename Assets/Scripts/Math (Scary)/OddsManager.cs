@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,14 +28,25 @@ public class OddsManager : MonoBehaviour
     int payout;
     float multiplier = 1f;
 
-    [SerializeField] InputField betInputField;
+    [SerializeField] TMP_InputField betInputField;
     [SerializeField] Button increaseOddsButton;
     [SerializeField] Button decreaseOddsButton;
+    [SerializeField] Button fightButton;
+    [SerializeField] Button selectFighterA;
+    [SerializeField] Button selectFighterB;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        increaseOddsButton.onClick.AddListener(delegate { RaiseFighterBOdds(0.2f); });
+        decreaseOddsButton.onClick.AddListener(delegate { RaiseFighterAOdds(0.2f); });
+
+        selectFighterA.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
+        selectFighterB.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+
+        betInputField.onEndEdit.AddListener(delegate {PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
+
+        fightButton.onClick.AddListener(Fight);
     }
 
     private void Awake()
@@ -44,16 +56,12 @@ public class OddsManager : MonoBehaviour
         GameManager.Instance.OddsManager = this;
         player = GameManager.Instance.Player;
         InitFighterList();
+        SelectFighters();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Make sure currentOdds stays between min and max
-        Mathf.Clamp(currentOdds, minimumOdds, maximumOdds);
-
-        //Update multiplier constantly. Could move this to be event based. Useful for making the UI.
-        SetMultiplier();
     }
 
 /// <summary>
@@ -65,18 +73,21 @@ public class OddsManager : MonoBehaviour
 
     void RaiseFighterBOdds(float amount)
     {
-        currentOdds += amount;
+        currentOdds = Mathf.Clamp(currentOdds + amount, minimumOdds, maximumOdds);
+        SetMultiplier();
+        Debug.Log(currentOdds);
     }
 
     void RaiseFighterAOdds(float amount)
     {
-        currentOdds -= amount;
+        currentOdds = Mathf.Clamp(currentOdds - amount, minimumOdds, maximumOdds);
+        SetMultiplier();
+        Debug.Log(currentOdds);
     }
 
     void InitFighterList()
     {
         //Clear list, so we can make sure only 4 fighters are on there.
-        //list is null for some reason no clue why
         fighterList.Clear();
 
         fighterList.Add(butterBuster);
@@ -99,6 +110,9 @@ public class OddsManager : MonoBehaviour
         {
             currentBet = playerBet;
             player.RemoveChips(playerBet);
+
+            Debug.Log("Current bet: " + currentBet);
+            Debug.Log("Money Left: " + player.GetChips());
         }
         else
         {
@@ -110,16 +124,18 @@ public class OddsManager : MonoBehaviour
     {
         System.Random rand = new System.Random();
 
-        int indexA = rand.Next(0, 3);
+        int indexA = rand.Next(0, fighterList.Count);
 
         FighterA = fighterList[indexA];
 
         //Has to be a better way to do this. Figure it out.
         fighterList.RemoveAt(indexA);
 
-        int indexB = rand.Next(0, 2);
+        int indexB = rand.Next(0, fighterList.Count);
 
         FighterB = fighterList[indexB];
+
+        Debug.Log("The fighters are: " + FighterA.name + " and " + FighterB.name);
     }
 
     void Fight()
@@ -159,6 +175,7 @@ public class OddsManager : MonoBehaviour
         {
             payout = (int)(currentBet * multiplier);
             player.AddChips(payout);
+            Debug.Log("Player won " + payout + " chips!");
         }
 
         ResetValues();

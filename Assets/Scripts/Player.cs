@@ -21,9 +21,15 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         GameManager.Instance.Player = this;
+        Debug.Log(GameManager.Instance.Player);
     }
 
     public Fighter GetSelectedFighter() { return selectedFighter; }
+    public void SetSelectedFigher(Fighter fighter) 
+    { 
+        selectedFighter = fighter; 
+        Debug.Log("Selected fighter is: " + selectedFighter.name);
+    }
 
     public int GetChips() { return chips; }
 
