@@ -1,51 +1,40 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class DialogueChoice
+[System.Serializable]
+public class DialogueTree
 {
-    public string id;
-    public string text;
-    public string gotoNode;         
-    public string action;           
-    public float successChance = 1f; 
-    public string gotoOnSuccess;   
-    public string gotoOnFail;       
+    public List<string> start;
+    public List<DialogueNode> nodes;
+
+    public DialogueNode GetNode(string id)
+    {
+        return nodes.Find(n => n.id == id);
+    }
+
+    public static DialogueTree FromJson(string json)
+    {
+        return JsonUtility.FromJson<DialogueTree>(json);
+    }
 }
 
-[Serializable]
+[System.Serializable]
 public class DialogueNode
 {
     public string id;
     public string speaker;
     public string text;
-    public bool end = false;
     public List<DialogueChoice> choices;
 }
 
-[Serializable]
-public class DialogueTreeJsonWrapper
+[System.Serializable]
+public class DialogueChoice
 {
-    public string start;
-    public List<DialogueNode> nodes;
-}
-
-public class DialogueTree
-{
-    public string start;
-    public Dictionary<string, DialogueNode> nodes = new Dictionary<string, DialogueNode>();
-
-    public static DialogueTree FromJson(string json)
-    {
-        var wrapper = JsonUtility.FromJson<DialogueTreeJsonWrapper>(json);
-        DialogueTree tree = new DialogueTree();
-        tree.start = wrapper.start;
-        if (wrapper.nodes != null)
-        {
-            foreach (var n in wrapper.nodes)
-                tree.nodes[n.id] = n;
-        }
-        return tree;
-    }
+    public string id;
+    public string text;
+    public string gotoNode;
+    public string action;
+    public float successChance;
+    public string gotoOnSuccess;
+    public string gotoOnFail;
 }
