@@ -28,6 +28,8 @@ public class OddsManager : MonoBehaviour
     int payout;
     float multiplier = 1f;
 
+    System.Random rand = new System.Random();
+
     [SerializeField] TMP_InputField betInputField;
     [SerializeField] Button increaseOddsButton;
     [SerializeField] Button decreaseOddsButton;
@@ -122,7 +124,7 @@ public class OddsManager : MonoBehaviour
 
     void SelectFighters()
     {
-        System.Random rand = new System.Random();
+        
 
         int indexA = rand.Next(0, fighterList.Count);
 
@@ -161,12 +163,16 @@ public class OddsManager : MonoBehaviour
 
     void CheckWinner()
     {
-        float winningNumber = UnityEngine.Random.value;
+        float winningNumber = rand.Next(0, 100);
 
-        if (winningNumber < currentOdds)
+        if (winningNumber/100 < currentOdds)
+        {
             FighterA.SetAsWinner();
+        }
         else
+        {
             FighterB.SetAsWinner();
+        }
     }
 
     void OnRoundEnd()
@@ -192,8 +198,10 @@ public class OddsManager : MonoBehaviour
         FighterB = null;
         currentOdds = 0.5f;
 
+        betInputField.text = string.Empty;
+
         InitFighterList();
-        
+        SelectFighters();
     }
 
 
