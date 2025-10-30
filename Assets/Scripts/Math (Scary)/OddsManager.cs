@@ -86,6 +86,36 @@ public class OddsManager : MonoBehaviour
         SetMultiplier();
         Debug.Log(currentOdds);
     }
+    void SetMultiplier()
+    {
+        if (player.GetSelectedFighter() == null) return;
+
+        if (player.GetSelectedFighter() == FighterA)
+        {
+            multiplier = 1f + currentOdds;
+        }
+        else
+        {
+            multiplier = 2f - currentOdds;
+        }
+    }
+
+    void PlayerMakesBet(int playerBet)
+    {
+        //Probably should clamp playerBet to be less than player chips. Skips the if statement.
+        if (playerBet <= player.GetChips())
+        {
+            currentBet = playerBet;
+            player.RemoveChips(playerBet);
+
+            Debug.Log("Current bet: " + currentBet);
+            Debug.Log("Money Left: " + player.GetChips());
+        }
+        else
+        {
+            Debug.Log("you broke lmao");
+        }
+    }
 
     void InitFighterList()
     {
@@ -103,23 +133,6 @@ public class OddsManager : MonoBehaviour
             fighter.Reset();
         }
 
-    }
-
-    void PlayerMakesBet(int playerBet)
-    {
-        //Probably should clamp playerBet to be less than player chips. Skips the if statement.
-        if(playerBet <= player.GetChips())
-        {
-            currentBet = playerBet;
-            player.RemoveChips(playerBet);
-
-            Debug.Log("Current bet: " + currentBet);
-            Debug.Log("Money Left: " + player.GetChips());
-        }
-        else
-        {
-            Debug.Log("you broke lmao");
-        }
     }
 
     void SelectFighters()
@@ -145,20 +158,6 @@ public class OddsManager : MonoBehaviour
         CheckWinner();
         
         OnRoundEnd();
-    }
-
-    void SetMultiplier()
-    {
-        if (player.GetSelectedFighter() == null) return;
-
-        if (player.GetSelectedFighter() == FighterA)
-        {
-            multiplier = 1f + currentOdds;
-        }
-        else
-        {
-            multiplier = 2f - currentOdds;
-        }
     }
 
     void CheckWinner()
