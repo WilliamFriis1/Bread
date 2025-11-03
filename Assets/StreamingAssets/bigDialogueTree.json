@@ -32,7 +32,7 @@
       "speaker": "fortune cookie",
       "text": "I got whachu need. Hand over the chips.",
       "choices": [
-        { "id": "c1", "text": "Buy flour", "action": "BUY_FLOUR", "successChance": 0.9, "gotoOnSuccess": "npc_dealer_buy_success", "gotoOnFail": "npc_dealer_buy_fail" },
+        { "id": "c1", "text": "Buy flour", "gotoNode": "npc_dealer_buy_success" },
         { "id": "c2", "text": "Ask for discount", "gotoNode": "npc_dealer_discount" },
         { "id": "c3", "text": "Leave", "gotoNode": "npc_dealer_end" }
       ]
@@ -43,14 +43,6 @@
       "text": "Pleasure doin’ business. Don’t overdose on carbs, kid.",
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_dealer_end" }
-      ]
-    },
-    {
-      "id": "npc_dealer_buy_fail",
-      "speaker": "fortune cookie",
-      "text": "You sure you got the chips for that? Don’t try to pull crumbs on me, pal.",
-      "choices": [
-        { "id": "c1", "text": "Apologize", "gotoNode": "npc_dealer_end" }
       ]
     },
     {
@@ -148,43 +140,51 @@
     {
       "id": "npc_referee_root",
       "speaker": "narrator",
-      "text": "The referee stands tall, half sugar, half justice. The whistle gleams with a suspicious glaze.",
+      "text": "There he is, the famous referee, Cannoloco. They say he is one bloody tough cookie, purely because he is the last to leave the oven-sauna and holds the record for withstanding the highest heat in it. Better approach him carefully else you could be in deep trouble.",
       "choices": [
-        { "id": "c1", "text": "Ask about the rules", "gotoNode": "npc_referee_rules" },
-        { "id": "c2", "text": "Accuse of bias", "gotoNode": "npc_referee_accuse" },
+        { "id": "c1", "text": "Ask about the rules", "gotoNode": "npc_referee_seek" },
+        { "id": "c2", "text": "Accuse of bias", "gotoNode": "npc_referee_bribe" },
         { "id": "c3", "text": "Leave", "gotoNode": "npc_referee_end" }
       ]
     },
     {
-      "id": "npc_referee_rules",
-      "speaker": "referee",
-      "text": "Rules? The first rule is: don’t get melted. The second rule: if you do, don’t scream too loud. It disturbs the customers.",
+      "id": "npc_referee_seek",
+      "speaker": "player",
+      "text": "I’m dough-lighted to see you! Now let’s talk business, shall we? ",
       "choices": [
-        { "id": "c1", "text": "That’s grim", "gotoNode": "npc_referee_rules_followup" },
+        { "id": "c1", "text": "Ask for information", "action": "SEEK_INFO", "successChance": 0.4, "gotoOnSuccess": "npc_referee_seek_success", "gotoOnFail": "npc_referee_seek_fail" },
         { "id": "c2", "text": "Leave", "gotoNode": "npc_referee_end" }
       ]
     },
     {
-      "id": "npc_referee_rules_followup",
+      "id": "npc_referee_seek_success",
       "speaker": "referee",
-      "text": "Welcome to the sweet life, kid. Sugarcoated on the outside, rotten dough on the inside.",
+      "text": "Good",
       "choices": [
-        { "id": "c1", "text": "End talk", "gotoNode": "npc_referee_end" }
+        { "id": "c1", "text": "Leave quietly", "gotoNode": "npc_referee_end" }
       ]
     },
     {
-      "id": "npc_referee_accuse",
+      "id": "npc_referee_seek_fail",
+      "speaker": "referee",
+      "text": "Bad",
+      "choices": [
+        { "id": "c1", "text": "Leave quietly", "gotoNode": "npc_referee_end" }
+      ]
+    },
+    {
+      "id": "npc_referee_bribe",
       "speaker": "referee",
       "text": "Bias? I call it fair! Unless someone pays better, of course. Hypothetically speaking.",
       "choices": [
-        { "id": "c1", "text": "Bribe him", "action": "BRIBE_REF", "successChance": 0.5, "gotoOnSuccess": "npc_referee_bribe_success", "gotoOnFail": "npc_referee_bribe_fail" },
+        { "id": "c1", "text": "Bribe him", "action": "BRIBE_REF", "successChance": 0.4, "gotoOnSuccess": "npc_referee_bribe_success", "gotoOnFail": "npc_referee_bribe_fail" },
         { "id": "c2", "text": "Apologize", "gotoNode": "npc_referee_end" }
       ]
     },
     {
       "id": "npc_referee_bribe_success",
       "speaker": "referee",
-      "text": "I’ll make sure your bets rise like dough in summer. You didn’t hear that from me.",
+      "text": "",
       "choices": [
         { "id": "c1", "text": "Leave quietly", "gotoNode": "npc_referee_end" }
       ]
@@ -192,7 +192,7 @@
     {
       "id": "npc_referee_bribe_fail",
       "speaker": "referee",
-      "text": "You trying to butter me up? You’re one coin short of a cupcake, friend.",
+      "text": "You trying to butter me up? ",
       "choices": [
         { "id": "c1", "text": "Leave awkwardly", "gotoNode": "npc_referee_end" }
       ]
@@ -209,14 +209,14 @@
       "speaker": "narrator",
       "text": "A gingerbread man is pacing nervously, icing sweat dripping down his frosted brow.",
       "choices": [
-        { "id": "c1", "text": "Ask if he’s okay", "gotoNode": "npc_gingerbread1_chat" },
+        { "id": "c1", "text": "Ask for information", "gotoNode": "npc_gingerbread1_seek" },
         { "id": "c2", "text": "Ignore him", "gotoNode": "npc_gingerbread1_end" }
       ]
     },
     {
-      "id": "npc_gingerbread1_chat",
-      "speaker": "gingerbread",
-      "text": "I can feel it… this next bet is the one. The chocolate gods owe me a win!",
+      "id": "npc_gingerbread1_seek",
+      "speaker": "player",
+      "text": "It’s 5 o’clock, time to spill the tea. Have you got something?",
       "choices": [
         { "id": "c1", "text": "Encourage him", "gotoNode": "npc_gingerbread1_success" },
         { "id": "c2", "text": "Warn him", "gotoNode": "npc_gingerbread1_fail" }
