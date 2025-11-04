@@ -7,7 +7,9 @@
       "text": "One of the coaches is approaching you, maybe they're here to check the stats… oh, they're here to gamble. That checks out.",
       "choices": [
         { "id": "c1", "text": "Talk to the coach", "gotoNode": "npc_coach_intro" },
-        { "id": "c2", "text": "Leave", "gotoNode": "npc_coach_end" }
+        { "id": "c2", "text": "Ask for information", "gotoNode": "npc_coach_seek" },
+        { "id": "c3", "text": "Offer a bribe", "gotoNode": "npc_coach_bribe" },
+        { "id": "c4", "text": "Leave", "gotoNode": "npc_coach_end" }
       ]
     },
     {
@@ -15,7 +17,7 @@
       "speaker": "coach",
       "text": "Every coach knows that the best way to support your fighter is through gambling. It shows an unbreakable bond. By that I mean I'll break their bones if they lose.",
       "choices": [
-        { "id": "c1", "text": "Ask for information", "gotoNode": "npc_coach_seek" },
+        { "id": "c1", "text": "Seek for information", "gotoNode": "npc_coach_seek" },
         { "id": "c2", "text": "Offer a bribe", "gotoNode": "npc_coach_bribe" },
         { "id": "c3", "text": "Leave", "gotoNode": "npc_coach_end" }
       ]
@@ -25,7 +27,7 @@
       "speaker": "player",
       "text": "They say knowledge means power, and money also means power… by the law of commutativity, knowledge must mean money.",
       "choices": [
-        { "id": "c1", "text": "Ask again, seriously", "action": "SEEK_INFO", "successChance": 0.6, "gotoOnSuccess": "npc_coach_seek_success", "gotoOnFail": "npc_coach_seek_fail" },
+        { "id": "c1", "text": "Ask for information", "action": "SEEK_INFO", "successChance": 0.6, "gotoOnSuccess": "npc_coach_seek_success", "gotoOnFail": "npc_coach_seek_fail" },
         { "id": "c2", "text": "Leave", "gotoNode": "npc_coach_end" }
       ]
     },

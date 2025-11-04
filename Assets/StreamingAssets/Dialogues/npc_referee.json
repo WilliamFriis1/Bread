@@ -49,27 +49,27 @@
     },
     {
       "id": "npc_referee_bribe",
-      "speaker": "referee",
-      "text": "Bias? I call it fair! Unless someone pays better, of course. Hypothetically speaking.",
+      "speaker": "player",
+      "text": "You looking abit rough lately, think I have exacly what you need. ",
       "choices": [
         { "id": "c1", "text": "Bribe him", "action": "BRIBE_REF", "successChance": 0.4, "gotoOnSuccess": "npc_referee_bribe_success", "gotoOnFail": "npc_referee_bribe_fail" },
-        { "id": "c2", "text": "Apologize", "gotoNode": "npc_referee_end" }
+        { "id": "c2", "text": "Nevermind", "gotoNode": "npc_referee_end" }
       ]
     },
     {
       "id": "npc_referee_bribe_success",
       "speaker": "referee",
-      "text": "Well… maybe I didn’t see that foul. Maybe I was busy polishing my whistle.",
+      "text": "You got me there, and I'm going to be honest with you. Life is a bit rough right now so I could use some. ",
       "choices": [
-        { "id": "c1", "text": "Leave quietly", "gotoNode": "npc_referee_end" }
+        { "id": "c1", "text": "Leave ", "gotoNode": "npc_referee_end" }
       ]
     },
     {
       "id": "npc_referee_bribe_fail",
       "speaker": "referee",
-      "text": "You trying to butter me up? You’ll get burned for that.",
+      "text": "Well, would you look at that. I was fooling around and here you are trying to butter me up. ",
       "choices": [
-        { "id": "c1", "text": "Leave awkwardly", "gotoNode": "npc_referee_end" }
+        { "id": "c1", "text": "Awkwardly end chat", "gotoNode": "npc_referee_end" }
       ]
     },
     {
