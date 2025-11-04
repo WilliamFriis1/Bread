@@ -17,7 +17,7 @@ public class DialogueManager : MonoBehaviour
 
     public void LoadTreeFromFile(string filename)
     {
-        string path = Path.Combine(Application.streamingAssetsPath, filename);
+        string path = Path.Combine(Application.streamingAssetsPath, "Dialogues", filename);
 
         if (!File.Exists(path))
         {
@@ -27,7 +27,7 @@ public class DialogueManager : MonoBehaviour
 
         string json = File.ReadAllText(path);
         currentTree = DialogueTree.FromJson(json);
-        Debug.Log("Dialogue tree loaded: " + filename);
+        Debug.Log($"Dialogue tree loaded from: {filename}");
     }
 
     public void StartDialogueAt(string nodeId)
@@ -72,15 +72,27 @@ public class DialogueManager : MonoBehaviour
         if (!string.IsNullOrEmpty(choice.action))
         {
             Debug.Log("Action triggered: " + choice.action);
+            bool success = Random.value <= choice.successChance;
 
-            if (Random.value <= choice.successChance)
-                ShowNode(currentTree.GetNode(choice.gotoOnSuccess));
+            string nextNode = success ? choice.gotoOnSuccess : choice.gotoOnFail;
+            DialogueNode next = currentTree.GetNode(nextNode);
+
+            if (next != null)
+                ShowNode(next);
             else
-                ShowNode(currentTree.GetNode(choice.gotoOnFail));
+                EndDialogue();
+        }
+        else if (!string.IsNullOrEmpty(choice.gotoNode))
+        {
+            DialogueNode next = currentTree.GetNode(choice.gotoNode);
+            if (next != null)
+                ShowNode(next);
+            else
+                EndDialogue();
         }
         else
         {
-            ShowNode(currentTree.GetNode(choice.gotoNode));
+            EndDialogue();
         }
     }
 
