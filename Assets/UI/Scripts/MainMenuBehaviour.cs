@@ -84,39 +84,30 @@ public class MainMenuBehaviour : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
 
-            Vector3 startButtonPos = startButtonStartPos;
-            startButtonPos.x = Mathf.Lerp(startButtonStartPos.x, m_targetstartButtonPosition.x, t);
-            m_startButton.transform.localPosition = startButtonPos;
-
-            Vector3 quitButtonPos = quitButtonStartPos;
-            quitButtonPos.x = Mathf.Lerp(quitButtonStartPos.x, m_targetQuitButtonPosition.x, t);
-            m_quitButton.transform.localPosition = quitButtonPos;
-
-            Vector3 titlePos = titleStartPos;
-            titlePos.x = Mathf.Lerp(titleStartPos.x, m_targetTitlePosition.x, t);
-            m_titleText.transform.localPosition = titlePos;
-
-            Vector3 characterPos = characterStartPos;
-            characterPos.x = Mathf.Lerp(characterStartPos.x, m_targetCharacterPosition.x, t);
-            m_characterImg.transform.localPosition = characterPos;
-
+            LerpToTargetPosition(m_startButton.gameObject, startButtonStartPos, m_targetstartButtonPosition, t);
+            LerpToTargetPosition(m_quitButton.gameObject, quitButtonStartPos, m_targetQuitButtonPosition, t);
+            LerpToTargetPosition(m_titleText.gameObject, titleStartPos, m_targetTitlePosition, t);
+            LerpToTargetPosition(m_characterImg.gameObject, characterStartPos, m_targetCharacterPosition, t);
             yield return null;
         }
 
-        Vector3 finalStartButtonPos = m_startButton.transform.localPosition;
-        finalStartButtonPos.x = m_targetstartButtonPosition.x;
-        m_startButton.transform.localPosition = finalStartButtonPos;
+        SetFinalPosition(m_startButton.gameObject, m_targetstartButtonPosition);
+        SetFinalPosition(m_quitButton.gameObject, m_targetQuitButtonPosition);
+        SetFinalPosition(m_titleText.gameObject, m_targetTitlePosition);
+        SetFinalPosition(m_characterImg.gameObject, m_targetCharacterPosition);
+    }
 
-        Vector3 finalQuitButtonPos = m_quitButton.transform.localPosition;
-        finalQuitButtonPos.x = m_targetQuitButtonPosition.x;
-        m_quitButton.transform.localPosition = finalQuitButtonPos;
+    private void SetFinalPosition(GameObject uiComponent, Vector3 targetPos)
+    {
+        Vector3 finalPos = uiComponent.transform.localPosition;
+        finalPos.x = targetPos.x;
+        uiComponent.transform.localPosition = finalPos;
+    }
 
-        Vector3 finalTitlePos = m_titleText.transform.localPosition;
-        finalTitlePos.x = m_targetTitlePosition.x;
-        m_titleText.transform.localPosition = finalTitlePos;
-
-        Vector3 finalCharacterPos = m_characterImg.transform.localPosition;
-        finalCharacterPos.x = m_targetCharacterPosition.x;
-        m_characterImg.transform.localPosition = finalCharacterPos;
+    private void LerpToTargetPosition(GameObject uiComponent, Vector3 startPos, Vector3 targetPos, float t)
+    {
+        Vector3 currentPos = startPos;
+        currentPos.x = Mathf.Lerp(currentPos.x, targetPos.x, t);
+        uiComponent.transform.localPosition = currentPos;
     }
 }
