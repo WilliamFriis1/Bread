@@ -1,0 +1,137 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class FightMenuBehaviour : MonoBehaviour
+{
+    [SerializeField] private GameObject m_oddsManagerObj;
+    [SerializeField] private GameObject m_parentObj;
+    [SerializeField] private GameObject m_evalBarObj;
+    [SerializeField] private Image m_fighterA;
+    [SerializeField] private Image m_fighterB;
+    [SerializeField] private Sprite m_butterBusterSprite;
+    [SerializeField] private Sprite m_leCroissantSprite;
+    [SerializeField] private Sprite m_masterCupcakeSprite;
+    [SerializeField] private Sprite m_doughAndNoughtSprite;
+
+    private OddsManager m_oddsManager;
+    private FadeAnimator m_fadeAnimator;
+    private Vector3 m_fighterAStartPosition;
+    private Vector3 m_fighterBStartPosition;
+    private Vector3 m_parentTargetPosition;
+    private Image m_overlay; 
+
+    void Start()
+    {
+        m_fadeAnimator = GetComponent<FadeAnimator>();
+        m_oddsManager = m_oddsManagerObj.GetComponent<OddsManager>();
+        m_fighterAStartPosition = m_fighterA.GetComponent<RectTransform>().localPosition;
+        m_fighterBStartPosition = m_fighterB.GetComponent<RectTransform>().localPosition;
+        m_parentTargetPosition = m_parentObj.transform.localPosition;
+        SetFighters();
+        Vector3 newPos = m_parentObj.transform.localPosition;
+        newPos.y += 1100;
+        m_parentObj.transform.localPosition = newPos;
+
+        StartCoroutine(InitFightScene(1f));
+        StartCoroutine(StartFight(2f));
+    }
+
+    public void Init()
+    {
+    }
+
+    private void SetFighters()
+    {
+        if (!string.IsNullOrEmpty(m_oddsManager.GetFighterA) && !string.IsNullOrEmpty(m_oddsManager.GetFighterB))
+        {
+            string fighterAName = m_oddsManager.GetFighterA;
+            string fighterBName = m_oddsManager.GetFighterB;
+
+            m_fighterA.sprite = GetFighterSprite(fighterAName);
+
+            m_fighterB.sprite = GetFighterSprite(fighterBName);
+        }
+        m_fighterA.SetNativeSize();
+        m_fighterB.SetNativeSize();
+
+        float scaleFactor = 0.3f;
+
+        RectTransform fighterARect = m_fighterA.GetComponent<RectTransform>();
+        RectTransform fighterBRect = m_fighterB.GetComponent<RectTransform>();
+
+        fighterARect.transform.localScale *= scaleFactor;
+        fighterBRect.transform.localScale *= scaleFactor;
+    }
+
+    private Sprite GetFighterSprite(string fighterName)
+    {
+        switch (fighterName)
+        {
+            case "Butter Buster":
+                return m_butterBusterSprite;
+            case "Le Croissant":
+                return m_leCroissantSprite;
+            case "Master Cupcake":
+                return m_masterCupcakeSprite;
+            case "Dough & Nought":
+                return m_doughAndNoughtSprite;
+            default:
+                Debug.LogWarning($"Fighter {fighterName} has no assigned sprite!");
+                return null;
+        }
+    }
+
+    IEnumerator InitFightScene(float duration)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPos = m_parentObj.transform.localPosition;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration);
+            LerpToTargetPosition(m_parentObj, startPos, m_parentTargetPosition, t);
+
+            yield return null;
+        }
+        SetFinalPosition(m_parentObj, m_parentTargetPosition);
+    }
+     
+    IEnumerator StartFight(float duration)
+    {
+        yield return new WaitForSeconds(3f);
+        float elapsedTime = 0f;
+
+        Vector3 fighterATargetPosition = m_fighterAStartPosition + new Vector3(250, 0, 0);
+        Vector3 fighterBTargetPosition = m_fighterBStartPosition + new Vector3(-250, 0, 0);
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration);
+            LerpToTargetPosition(m_fighterA.gameObject, m_fighterAStartPosition, fighterATargetPosition, t);
+            LerpToTargetPosition(m_fighterB.gameObject, m_fighterBStartPosition, fighterBTargetPosition, t);
+            
+            yield return null;
+        }
+
+        SetFinalPosition(m_fighterA.gameObject, fighterATargetPosition);
+        SetFinalPosition(m_fighterB.gameObject, fighterBTargetPosition);
+    }
+
+    private void LerpToTargetPosition(GameObject uiComponent, Vector3 startPos, Vector3 targetPos, float t)
+    {
+        Vector3 currentPos = startPos;
+        currentPos.x = Mathf.Lerp(currentPos.x, targetPos.x, t);
+        currentPos.y = Mathf.Lerp(currentPos.y, targetPos.y, t);
+        uiComponent.transform.localPosition = currentPos;
+    }
+
+    private void SetFinalPosition(GameObject uiComponent, Vector3 targetPos)
+    {
+        Vector3 finalPos = uiComponent.transform.localPosition;
+        finalPos.x = targetPos.x;
+        uiComponent.transform.localPosition = finalPos;
+    }
+}
