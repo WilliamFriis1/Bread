@@ -1,12 +1,14 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FightMenuBehaviour : MonoBehaviour
 {
+    [SerializeField] private Button m_startButton;
+    [SerializeField] private GameObject m_overlay;
     [SerializeField] private GameObject m_oddsManagerObj;
     [SerializeField] private GameObject m_parentObj;
-    [SerializeField] private GameObject m_evalBarObj;
     [SerializeField] private Image m_fighterA;
     [SerializeField] private Image m_fighterB;
     [SerializeField] private Sprite m_butterBusterSprite;
@@ -19,29 +21,34 @@ public class FightMenuBehaviour : MonoBehaviour
     private Vector3 m_fighterAStartPosition;
     private Vector3 m_fighterBStartPosition;
     private Vector3 m_parentTargetPosition;
-    private Image m_overlay; 
+    private CanvasGroup m_overlayGroup;
 
+    #region Unity Methods
     void Start()
     {
+        m_startButton.onClick.AddListener(delegate { Init(); });
         m_fadeAnimator = GetComponent<FadeAnimator>();
         m_oddsManager = m_oddsManagerObj.GetComponent<OddsManager>();
         m_fighterAStartPosition = m_fighterA.GetComponent<RectTransform>().localPosition;
         m_fighterBStartPosition = m_fighterB.GetComponent<RectTransform>().localPosition;
         m_parentTargetPosition = m_parentObj.transform.localPosition;
-        SetFighters();
+        m_overlayGroup = m_overlay.GetComponent<CanvasGroup>();
+        SetFighterSprites();
         Vector3 newPos = m_parentObj.transform.localPosition;
         newPos.y += 1100;
         m_parentObj.transform.localPosition = newPos;
+        m_overlayGroup.alpha = 0.0f;
+    }
+    #endregion
 
+    public void Init()
+    {
+        m_fadeAnimator.FadeIn(m_overlayGroup, 1f);
         StartCoroutine(InitFightScene(1f));
         StartCoroutine(StartFight(2f));
     }
 
-    public void Init()
-    {
-    }
-
-    private void SetFighters()
+    private void SetFighterSprites()
     {
         if (!string.IsNullOrEmpty(m_oddsManager.GetFighterA) && !string.IsNullOrEmpty(m_oddsManager.GetFighterB))
         {
@@ -84,6 +91,7 @@ public class FightMenuBehaviour : MonoBehaviour
 
     IEnumerator InitFightScene(float duration)
     {
+        yield return new WaitForSeconds(2f);
         float elapsedTime = 0f;
         Vector3 startPos = m_parentObj.transform.localPosition;
 
@@ -96,11 +104,12 @@ public class FightMenuBehaviour : MonoBehaviour
             yield return null;
         }
         SetFinalPosition(m_parentObj, m_parentTargetPosition);
+
     }
      
     IEnumerator StartFight(float duration)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
         float elapsedTime = 0f;
 
         Vector3 fighterATargetPosition = m_fighterAStartPosition + new Vector3(250, 0, 0);

@@ -1050,7 +1050,7 @@ GameObject:
   - component: {fileID: 399714393}
   - component: {fileID: 399714392}
   m_Layer: 5
-  m_Name: FighterB
+  m_Name: FighterBText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -170.57999, y: 0, z: 4.319803, w: 0}
+  m_margin: {x: -170.57999, y: 0, z: -303.30548, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1632,6 +1632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 682113487}
+  - component: {fileID: 682113490}
   - component: {fileID: 682113489}
   - component: {fileID: 682113488}
   m_Layer: 5
@@ -1673,7 +1674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3056603, g: 0.22479309, b: 0.12168738, a: 0.972549}
+  m_Color: {r: 0.3056603, g: 0.22479309, b: 0.12168738, a: 0.9843137}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1698,6 +1699,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 682113486}
   m_CullTransparentMesh: 1
+--- !u!225 &682113490
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682113486}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &765552366
 GameObject:
   m_ObjectHideFlags: 0
@@ -3595,6 +3608,7 @@ GameObject:
   - component: {fileID: 1622394398}
   - component: {fileID: 1622394397}
   - component: {fileID: 1622394396}
+  - component: {fileID: 1622394399}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -3649,6 +3663,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1622394399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622394395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf21dfa2704ad242ad71b6ae3348ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1636480484
 GameObject:
   m_ObjectHideFlags: 0
@@ -3797,7 +3823,7 @@ GameObject:
   - component: {fileID: 1643400108}
   - component: {fileID: 1643400107}
   m_Layer: 5
-  m_Name: Fight_icon
+  m_Name: FightIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3975,8 +4001,8 @@ Transform:
   m_GameObject: {fileID: 1777687592}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1644, z: 0}
-  m_LocalScale: {x: 6.9277835, y: 4.874626, z: 0.46123722}
+  m_LocalPosition: {x: 0, y: -0.0564, z: 0}
+  m_LocalScale: {x: 6.9277835, y: 4.65868, z: 0.46123722}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 983669324}
@@ -4184,6 +4210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1835513875}
   - component: {fileID: 1835513876}
+  - component: {fileID: 1835513878}
   - component: {fileID: 1835513877}
   m_Layer: 5
   m_Name: FightMenu
@@ -4223,9 +4250,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9f45e179ad53f458e8a62663b33768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_startButton: {fileID: 1390693646529572884}
+  m_overlay: {fileID: 682113486}
   m_oddsManagerObj: {fileID: 1622394395}
   m_parentObj: {fileID: 1835513874}
-  m_evalBarObj: {fileID: 826262477}
   m_fighterA: {fileID: 812338098}
   m_fighterB: {fileID: 1314479944}
   m_butterBusterSprite: {fileID: 21300000, guid: 4d6edd6b768869d49a089d3f3f3975b6,
@@ -4248,6 +4276,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69467f5a8a25c0645b9ab72df9660733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1835513878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835513874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7a2250fb05d1b45802438c61b2f6c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_evalIconObj: {fileID: 1643400105}
+  m_fighterAText: {fileID: 1870113197}
+  m_fighterBText: {fileID: 399714392}
 --- !u!1 &1870113195
 GameObject:
   m_ObjectHideFlags: 0
@@ -4260,7 +4303,7 @@ GameObject:
   - component: {fileID: 1870113198}
   - component: {fileID: 1870113197}
   m_Layer: 5
-  m_Name: FighterA
+  m_Name: FighterAText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4371,7 +4414,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -138.69157, w: 0}
+  m_margin: {x: -112.33493, y: 0, z: -256.21094, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

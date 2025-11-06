@@ -10,14 +10,15 @@ public class MainMenuBehaviour : MonoBehaviour
     [SerializeField] private Button m_quitButton;
     [SerializeField] private TextMeshProUGUI m_titleText;
     [SerializeField] private Image m_characterImg;
+
     private CanvasGroup m_menuGroup;
     private FadeAnimator m_fadeAnimator;
-
     private Vector3 m_targetstartButtonPosition;
     private Vector3 m_targetQuitButtonPosition;
     private Vector3 m_targetTitlePosition;
     private Vector3 m_targetCharacterPosition;
 
+    #region Unity Methods
     private void Start()
     {
         m_fadeAnimator = GetComponent<FadeAnimator>();
@@ -35,6 +36,7 @@ public class MainMenuBehaviour : MonoBehaviour
         m_fadeAnimator.FadeIn(m_menuGroup, 1f);
         StartCoroutine(AnimateMenuUI(1f));
     }
+    #endregion
 
     public void StartGame()
     {
