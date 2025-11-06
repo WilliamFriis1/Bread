@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class GameManager : MonoBehaviour
 {
 
-    enum GamePhase
+    public enum GamePhase
     {
         RoundStart,
+        PlaceBet,
         SpeakingToNPC,
         RoundEnd
     }
@@ -39,11 +41,13 @@ public class GameManager : MonoBehaviour
 
     public Player Player { get; set; }
     public OddsManager OddsManager { get; set; }
+    public GamePhase Phase;
+
     [SerializeField] Button nextGamePhase;
 
     void Start()
     {
-        
+        nextGamePhase.onClick.AddListener(MoveToNextPhase);
     }
 
     private void Awake()
@@ -59,6 +63,17 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void MoveToNextPhase()
+    {
+        Phase++;
+        if((int)(Phase)> 3)
+        {
+            Phase = 0;
+        }
+        Debug.Log(Phase.ToString());
+    }
+
 
     void Update()
     {
