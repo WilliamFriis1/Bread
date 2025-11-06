@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     }
 
     public Fighter GetSelectedFighter() { return selectedFighter; }
+    public string GetSelectedFighterName() {  return selectedFighter.name; }
     public void SetSelectedFigher(Fighter fighter) 
     { 
         selectedFighter = fighter; 

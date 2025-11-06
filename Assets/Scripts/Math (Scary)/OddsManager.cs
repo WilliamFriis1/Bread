@@ -19,8 +19,8 @@ public class OddsManager : MonoBehaviour
     Player player;
     Fighter FighterA;
     Fighter FighterB;
-    public string GetFighterA { get { return FighterA.name; } }
-    public string GetFighterB { get { return FighterB.name; } }
+    public string GetFighterAName { get { return FighterA.name; } }
+    public string GetFighterBName { get { return FighterB.name; } }
 
     float currentOdds = 0.5f;
     float minimumOdds = 0.25f;

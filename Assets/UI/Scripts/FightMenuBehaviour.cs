@@ -16,6 +16,9 @@ public class FightMenuBehaviour : MonoBehaviour
     [SerializeField] private Sprite m_masterCupcakeSprite;
     [SerializeField] private Sprite m_doughAndNoughtSprite;
 
+    public delegate void FightStartHandler(float fightDuration, string fighterA, string fighterB);
+    public event FightStartHandler OnFightStarted;
+
     private OddsManager m_oddsManager;
     private FadeAnimator m_fadeAnimator;
     private Vector3 m_fighterAStartPosition;
@@ -45,15 +48,15 @@ public class FightMenuBehaviour : MonoBehaviour
     {
         m_fadeAnimator.FadeIn(m_overlayGroup, 1f);
         StartCoroutine(InitFightScene(1f));
-        StartCoroutine(StartFight(2f));
+        StartCoroutine(StartFight(2f, 5f));
     }
 
     private void SetFighterSprites()
     {
-        if (!string.IsNullOrEmpty(m_oddsManager.GetFighterA) && !string.IsNullOrEmpty(m_oddsManager.GetFighterB))
+        if (!string.IsNullOrEmpty(m_oddsManager.GetFighterAName) && !string.IsNullOrEmpty(m_oddsManager.GetFighterBName))
         {
-            string fighterAName = m_oddsManager.GetFighterA;
-            string fighterBName = m_oddsManager.GetFighterB;
+            string fighterAName = m_oddsManager.GetFighterAName;
+            string fighterBName = m_oddsManager.GetFighterBName;
 
             m_fighterA.sprite = GetFighterSprite(fighterAName);
 
@@ -100,14 +103,12 @@ public class FightMenuBehaviour : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
             LerpToTargetPosition(m_parentObj, startPos, m_parentTargetPosition, t);
-
             yield return null;
         }
         SetFinalPosition(m_parentObj, m_parentTargetPosition);
-
     }
      
-    IEnumerator StartFight(float duration)
+    IEnumerator StartFight(float startUpDuration, float fightDuration)
     {
         yield return new WaitForSeconds(4f);
         float elapsedTime = 0f;
@@ -115,18 +116,18 @@ public class FightMenuBehaviour : MonoBehaviour
         Vector3 fighterATargetPosition = m_fighterAStartPosition + new Vector3(250, 0, 0);
         Vector3 fighterBTargetPosition = m_fighterBStartPosition + new Vector3(-250, 0, 0);
 
-        while (elapsedTime < duration)
+        while (elapsedTime < startUpDuration)
         {
             elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / duration);
+            float t = Mathf.Clamp01(elapsedTime / startUpDuration);
             LerpToTargetPosition(m_fighterA.gameObject, m_fighterAStartPosition, fighterATargetPosition, t);
             LerpToTargetPosition(m_fighterB.gameObject, m_fighterBStartPosition, fighterBTargetPosition, t);
-            
             yield return null;
         }
 
         SetFinalPosition(m_fighterA.gameObject, fighterATargetPosition);
         SetFinalPosition(m_fighterB.gameObject, fighterBTargetPosition);
+        OnFightStarted?.Invoke(fightDuration, m_oddsManager.GetFighterAName, m_oddsManager.GetFighterBName);
     }
 
     private void LerpToTargetPosition(GameObject uiComponent, Vector3 startPos, Vector3 targetPos, float t)
