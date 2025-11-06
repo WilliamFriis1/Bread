@@ -1,16 +1,25 @@
+using Ink.Runtime;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 
-public class NpcDefinition : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+public enum NpcArchetype { Coach, Referee, Dealer, Gingerbread }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+[CreateAssetMenu(menuName = "NPC/NpcDefinition")]
+public class NpcDefinition : ScriptableObject
+{
+    public string npcId;
+    public NpcArchetype archetype;
+    [Header("Dialogue (StreamingAssets)")]
+    public string dialogueFile;
+    public string displayName;
+    public bool acceptBribes = false;
+    public string prefferedBribeItemId;
+    public int minBribeAmount = 1;
+    public float bribeBonus = 0f;
+    public float infoBonus = 0f;
+
+    //Vendor
+    public bool isVendor;
+    public string commodityId;
+    public int commodityPrice = 1;
 }
