@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    [SerializeField] private string dialogueFile = "bigDialogueTree.json";
-    [SerializeField] private string startNodeId = "npc_gingerbread_root";
+    [Header("Dialogue File Info")]
+    [SerializeField] private string dialogueFile = "npc_gingerbread1.json";
+    [SerializeField] private string startNodeId = "npc_gingerbread1_root";
+
+    [Header("Manager Reference")]
     [SerializeField] private DialogueManager dialogueManager;
 
-    private bool playerInRange = false;
+    private bool playerInRange;
 
     private void Start()
     {
@@ -18,7 +21,13 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log($"Starting dialogue: {startNodeId}");
+            if (dialogueManager == null)
+            {
+                Debug.LogError("DialogueManager not found in scene!");
+                return;
+            }
+
+            Debug.Log($"Starting dialogue from file: {dialogueFile} at node: {startNodeId}");
             dialogueManager.LoadTreeFromFile(dialogueFile);
             dialogueManager.StartDialogueAt(startNodeId);
         }
