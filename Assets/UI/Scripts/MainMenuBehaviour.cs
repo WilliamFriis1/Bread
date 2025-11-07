@@ -11,6 +11,7 @@ public class MainMenuBehaviour : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_titleText;
     [SerializeField] private Image m_characterImg;
 
+    private LerpHelper m_lerpHelper;
     private CanvasGroup m_menuGroup;
     private FadeAnimator m_fadeAnimator;
     private Vector3 m_targetstartButtonPosition;
@@ -21,6 +22,7 @@ public class MainMenuBehaviour : MonoBehaviour
     #region Unity Methods
     private void Start()
     {
+        m_lerpHelper = new LerpHelper();
         m_fadeAnimator = GetComponent<FadeAnimator>();
         m_menuGroup = GetComponentInChildren<CanvasGroup>();
         m_targetstartButtonPosition = m_startButton.GetComponent<RectTransform>().localPosition;
@@ -73,29 +75,16 @@ public class MainMenuBehaviour : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
 
-            LerpToTargetPosition(m_startButton.gameObject, startButtonStartPos, m_targetstartButtonPosition, t);
-            LerpToTargetPosition(m_quitButton.gameObject, quitButtonStartPos, m_targetQuitButtonPosition, t);
-            LerpToTargetPosition(m_titleText.gameObject, titleStartPos, m_targetTitlePosition, t);
-            LerpToTargetPosition(m_characterImg.gameObject, characterStartPos, m_targetCharacterPosition, t);
+            m_lerpHelper.LerpToTargetPosition(m_startButton.gameObject, startButtonStartPos, m_targetstartButtonPosition, t);
+            m_lerpHelper.LerpToTargetPosition(m_quitButton.gameObject, quitButtonStartPos, m_targetQuitButtonPosition, t);
+            m_lerpHelper.LerpToTargetPosition(m_titleText.gameObject, titleStartPos, m_targetTitlePosition, t);
+            m_lerpHelper.LerpToTargetPosition(m_characterImg.gameObject, characterStartPos, m_targetCharacterPosition, t);
             yield return null;
         }
 
-        SetFinalPosition(m_startButton.gameObject, m_targetstartButtonPosition);
-        SetFinalPosition(m_quitButton.gameObject, m_targetQuitButtonPosition);
-        SetFinalPosition(m_titleText.gameObject, m_targetTitlePosition);
-        SetFinalPosition(m_characterImg.gameObject, m_targetCharacterPosition);
-    }
-    private void LerpToTargetPosition(GameObject uiComponent, Vector3 startPos, Vector3 targetPos, float t)
-    {
-        Vector3 currentPos = startPos;
-        currentPos.x = Mathf.Lerp(currentPos.x, targetPos.x, t);
-        uiComponent.transform.localPosition = currentPos;
-    }
-
-    private void SetFinalPosition(GameObject uiComponent, Vector3 targetPos)
-    {
-        Vector3 finalPos = uiComponent.transform.localPosition;
-        finalPos.x = targetPos.x;
-        uiComponent.transform.localPosition = finalPos;
+        m_lerpHelper.SetFinalPosition(m_startButton.gameObject, m_targetstartButtonPosition);
+        m_lerpHelper.SetFinalPosition(m_quitButton.gameObject, m_targetQuitButtonPosition);
+        m_lerpHelper.SetFinalPosition(m_titleText.gameObject, m_targetTitlePosition);
+        m_lerpHelper.SetFinalPosition(m_characterImg.gameObject, m_targetCharacterPosition);
     }
 }
