@@ -3,15 +3,22 @@ using UnityEngine;
 public class EncounterDirector : MonoBehaviour
 {
     [SerializeField] private CharacterSlot slot;
-    [SerializeField] private NpcRandomizerTest randomizer;
-
-    public void OnNextPhasePressed()
+    [SerializeField] private NpcRandomizer randomizer;
+    public void StartNpcEncounter()
     {
-        GameManager.Instance.MoveToNextPhase();
-        if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
+        if (slot == null || randomizer == null)
         {
-            var def = randomizer.PickDefinition();
-            slot.Present(def);
+            Debug.Log("Shit's not working, type shi (aka,missing refs)");
+            return;
         }
+        randomizer.AdvanceRound();
+
+        var def = randomizer.PickDefinition();
+        if (def == null)
+        {
+            Debug.Log("NO NPC DEFINITION FOUND, FUUUUCK");
+            return;
+        }
+        slot.Present(def); // idk man, you just get that shit working. 
     }
 }
