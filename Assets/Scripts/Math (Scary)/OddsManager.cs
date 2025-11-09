@@ -174,7 +174,6 @@ public class OddsManager : MonoBehaviour
         {
             fighter.Reset();
         }
-
     }
 
     void SelectFighters()
