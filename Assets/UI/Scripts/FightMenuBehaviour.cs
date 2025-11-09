@@ -1,0 +1,135 @@
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class FightMenuBehaviour : MonoBehaviour
+{
+    [SerializeField] private Button m_startButton;
+    [SerializeField] private GameObject m_overlay;
+    [SerializeField] private GameObject m_oddsManagerObj;
+    [SerializeField] private GameObject m_parentObj;
+    [SerializeField] private Image m_fighterA;
+    [SerializeField] private Image m_fighterB;
+    [SerializeField] private Sprite m_butterBusterSprite;
+    [SerializeField] private Sprite m_leCroissantSprite;
+    [SerializeField] private Sprite m_masterCupcakeSprite;
+    [SerializeField] private Sprite m_doughAndNoughtSprite;
+    [SerializeField] private float fightDuration;
+    [SerializeField] private float durationToFightStart;
+    [SerializeField] private float fightInitDuration;
+
+    public delegate void FightStartHandler(float durationToFightStart, Fighter fighterA, Fighter fighterB);
+    public event FightStartHandler OnFightStarted;
+
+    private LerpHelper m_lerpHelper;
+    private OddsManager m_oddsManager;
+    private FadeAnimator m_fadeAnimator;
+    private Vector3 m_fighterAStartPosition;
+    private Vector3 m_fighterBStartPosition;
+    private Vector3 m_parentTargetPosition;
+    private CanvasGroup m_overlayGroup;
+
+    #region Unity Methods
+    void Start()
+    {
+        m_lerpHelper = new LerpHelper();
+        m_startButton.onClick.AddListener(delegate { Init(); });
+        m_fadeAnimator = GetComponent<FadeAnimator>();
+        m_oddsManager = m_oddsManagerObj.GetComponent<OddsManager>();
+        m_fighterAStartPosition = m_fighterA.GetComponent<RectTransform>().localPosition;
+        m_fighterBStartPosition = m_fighterB.GetComponent<RectTransform>().localPosition;
+        m_parentTargetPosition = m_parentObj.transform.localPosition;
+        m_overlayGroup = m_overlay.GetComponent<CanvasGroup>();
+        SetFighterSprites();
+        Vector3 newPos = m_parentObj.transform.localPosition;
+        newPos.y += 1100;
+        m_parentObj.transform.localPosition = newPos;
+        m_overlayGroup.alpha = 0.0f;
+    }
+    #endregion
+
+    public void Init()
+    {
+        m_fadeAnimator.FadeIn(m_overlayGroup, 1f);
+        StartCoroutine(InitFightScene(fightInitDuration));
+        StartCoroutine(StartFight(fightInitDuration, durationToFightStart));
+    }
+
+    private void SetFighterSprites()
+    {
+        if (!string.IsNullOrEmpty(m_oddsManager.GetFighterA.Name) && !string.IsNullOrEmpty(m_oddsManager.GetFighterB.Name))
+        {
+            string fighterAName = m_oddsManager.GetFighterA.Name;
+            string fighterBName = m_oddsManager.GetFighterB.Name;
+
+            m_fighterA.sprite = GetFighterSprite(fighterAName);
+
+            m_fighterB.sprite = GetFighterSprite(fighterBName);
+        }
+        m_fighterA.SetNativeSize();
+        m_fighterB.SetNativeSize();
+
+        float scaleFactor = 0.3f;
+
+        RectTransform fighterARect = m_fighterA.GetComponent<RectTransform>();
+        RectTransform fighterBRect = m_fighterB.GetComponent<RectTransform>();
+
+        fighterARect.transform.localScale *= scaleFactor;
+        fighterBRect.transform.localScale *= scaleFactor;
+    }
+
+    private Sprite GetFighterSprite(string fighterName)
+    {
+        switch (fighterName)
+        {
+            case "Butter Buster":
+                return m_butterBusterSprite;
+            case "Le Croissant":
+                return m_leCroissantSprite;
+            case "Master Cupcake":
+                return m_masterCupcakeSprite;
+            case "Dough & Nought":
+                return m_doughAndNoughtSprite;
+            default:
+                Debug.LogWarning($"Fighter {fighterName} has no assigned sprite!");
+                return null;
+        }
+    }
+
+    IEnumerator InitFightScene(float duration)
+    {
+        yield return new WaitForSeconds(2f);
+        float elapsedTime = 0f;
+        Vector3 startPos = m_parentObj.transform.localPosition;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration);
+            m_lerpHelper.LerpToTargetPosition(m_parentObj, startPos, m_parentTargetPosition, t);
+            yield return null;
+        }
+        m_lerpHelper.SetFinalPosition(m_parentObj, m_parentTargetPosition);
+    }
+     
+    IEnumerator StartFight(float startUpDuration, float durationToFightStart)
+    {
+        OnFightStarted?.Invoke(durationToFightStart, m_oddsManager.GetFighterA, m_oddsManager.GetFighterB);
+        yield return new WaitForSeconds(durationToFightStart);
+        float elapsedTime = 0f;
+
+        Vector3 fighterATargetPosition = m_fighterAStartPosition + new Vector3(250, 0, 0);
+        Vector3 fighterBTargetPosition = m_fighterBStartPosition + new Vector3(-250, 0, 0);
+        while (elapsedTime < startUpDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / startUpDuration);
+            m_lerpHelper.LerpToTargetPosition(m_fighterA.gameObject, m_fighterAStartPosition, fighterATargetPosition, t);
+            m_lerpHelper.LerpToTargetPosition(m_fighterB.gameObject, m_fighterBStartPosition, fighterBTargetPosition, t);
+            yield return null;
+        }
+        m_lerpHelper.SetFinalPosition(m_fighterA.gameObject, fighterATargetPosition);
+        m_lerpHelper.SetFinalPosition(m_fighterB.gameObject, fighterBTargetPosition);
+    }
+}

@@ -2,19 +2,18 @@ using UnityEngine;
 
 public class Fighter
 {
-    Texture2D texture;
-    public string name;
+    public string Name { get; set; }
     bool hasWon;
 
     public Fighter(string name)
     {
-        this.name = name;
+        Name = name;
     }
 
     public void SetAsWinner()
     {
         hasWon = true;
-        Debug.Log("And the winner is: " + name);
+        Debug.Log("And the winner is: " + Name);
     }
 
     public bool IsWinner()

@@ -25,10 +25,12 @@ public class Player : MonoBehaviour
     }
 
     public Fighter GetSelectedFighter() { return selectedFighter; }
+    public string GetSelectedFighterName() {  return selectedFighter.Name; }
     public void SetSelectedFigher(Fighter fighter) 
     { 
         selectedFighter = fighter; 
-        Debug.Log("Selected fighter is: " + selectedFighter.name);
+        Debug.Log("Selected fighter is: " + selectedFighter.Name);
+        GameManager.Instance.MoveToNextPhase();
     }
 
     public int GetChips() { return chips; }

@@ -19,6 +19,8 @@ public class OddsManager : MonoBehaviour
     Player player;
     Fighter FighterA;
     Fighter FighterB;
+    public Fighter GetFighterA { get { return FighterA; } }
+    public Fighter GetFighterB { get { return FighterB; } }
 
     float currentOdds = 0.5f;
     float minimumOdds = 0.25f;
@@ -30,12 +32,14 @@ public class OddsManager : MonoBehaviour
 
     System.Random rand = new System.Random();
 
+    [SerializeField] GameObject currentChipsTextObj;
     [SerializeField] TMP_InputField betInputField;
     [SerializeField] Button increaseOddsButton;
     [SerializeField] Button decreaseOddsButton;
     [SerializeField] Button fightButton;
-    [SerializeField] Button selectFighterA;
-    [SerializeField] Button selectFighterB;
+    [SerializeField] Button selectFighterAButton;
+    [SerializeField] Button selectFighterBButton;
+    private TextMeshProUGUI currentChipsText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,12 +47,13 @@ public class OddsManager : MonoBehaviour
         increaseOddsButton.onClick.AddListener(delegate { RaiseFighterBOdds(0.2f); });
         decreaseOddsButton.onClick.AddListener(delegate { RaiseFighterAOdds(0.2f); });
 
-        selectFighterA.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
-        selectFighterB.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
+        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
 
         betInputField.onEndEdit.AddListener(delegate {PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
         fightButton.onClick.AddListener(Fight);
+        currentChipsText = currentChipsTextObj.GetComponent<TextMeshProUGUI>();
     }
 
     private void Awake()
@@ -59,20 +64,25 @@ public class OddsManager : MonoBehaviour
         player = GameManager.Instance.Player;
         InitFighterList();
         SelectFighters();
+        TextMeshProUGUI fighterAButtonTextObj = selectFighterAButton.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI fighterBButtonTextObj = selectFighterBButton.GetComponentInChildren<TextMeshProUGUI>();
+        fighterAButtonTextObj.text = $"Place bet on: \n {FighterA.Name}";
+        fighterBButtonTextObj.text = $"Place bet on: \n {FighterB.Name}";
     }
 
     // Update is called once per frame
     void Update()
     {
+        currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
         if(GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
         {
-            selectFighterA.gameObject.SetActive(true);
-            selectFighterB.gameObject.SetActive(true);
+            selectFighterAButton.gameObject.SetActive(true);
+            selectFighterBButton.gameObject.SetActive(true);
         }
         else
         {
-            selectFighterA.gameObject.SetActive(false);
-            selectFighterB.gameObject.SetActive(false);
+            selectFighterAButton.gameObject.SetActive(false);
+            selectFighterBButton.gameObject.SetActive(false);
         }
         if (GameManager.Instance.Phase == GameManager.GamePhase.PlaceBet)
         {
@@ -122,6 +132,7 @@ public class OddsManager : MonoBehaviour
         SetMultiplier();
         Debug.Log(currentOdds);
     }
+    
     void SetMultiplier()
     {
         if (player.GetSelectedFighter() == null) return;
@@ -146,6 +157,9 @@ public class OddsManager : MonoBehaviour
 
             Debug.Log("Current bet: " + currentBet);
             Debug.Log("Money Left: " + player.GetChips());
+
+            //If player can make this bet, move to next phase.
+            GameManager.Instance.MoveToNextPhase();
         }
         else
         {
@@ -168,13 +182,10 @@ public class OddsManager : MonoBehaviour
         {
             fighter.Reset();
         }
-
     }
 
     void SelectFighters()
     {
-        
-
         int indexA = rand.Next(0, fighterList.Count);
 
         FighterA = fighterList[indexA];
@@ -186,8 +197,17 @@ public class OddsManager : MonoBehaviour
 
         FighterB = fighterList[indexB];
 
-        Debug.Log("The fighters are: " + FighterA.name + " and " + FighterB.name);
+        Debug.Log("The fighters are: " + FighterA.Name + " and " + FighterB.Name);
     }
+
+    void DisqualifyFighter(Fighter fighter)
+    {
+        //Take in the fighter from an NPC interaction
+        //Set that fighter's odds to minimum (1 for fighterA, 0 for fighterB)
+        //Run CheckWinner and RoundEnd
+        //Basically just an instant win
+    }
+
 
     void Fight()
     {
@@ -219,10 +239,10 @@ public class OddsManager : MonoBehaviour
             Debug.Log("Player won " + payout + " chips!");
         }
 
-        ResetValues();
+        //ResetValues();
     }
 
-    void ResetValues()
+    public void ResetValues()
     {
         payout = 0;
 
