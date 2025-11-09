@@ -132,6 +132,7 @@ public class OddsManager : MonoBehaviour
         SetMultiplier();
         Debug.Log(currentOdds);
     }
+    
     void SetMultiplier()
     {
         if (player.GetSelectedFighter() == null) return;
@@ -198,6 +199,15 @@ public class OddsManager : MonoBehaviour
 
         Debug.Log("The fighters are: " + FighterA.Name + " and " + FighterB.Name);
     }
+
+    void DisqualifyFighter(Fighter fighter)
+    {
+        //Take in the fighter from an NPC interaction
+        //Set that fighter's odds to minimum (1 for fighterA, 0 for fighterB)
+        //Run CheckWinner and RoundEnd
+        //Basically just an instant win
+    }
+
 
     void Fight()
     {

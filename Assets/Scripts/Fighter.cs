@@ -7,7 +7,7 @@ public class Fighter
 
     public Fighter(string name)
     {
-        this.Name = name;
+        Name = name;
     }
 
     public void SetAsWinner()
