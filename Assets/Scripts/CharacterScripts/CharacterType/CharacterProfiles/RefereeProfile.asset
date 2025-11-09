@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcId: referee
   archetype: 1
-  dialogueFile: npc_referee
+  dialogueFile: npc_referee.json
   displayName: Referee
   acceptBribes: 1
   prefferedBribeItemId: 

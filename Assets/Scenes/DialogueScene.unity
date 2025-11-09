@@ -1902,8 +1902,9 @@ MonoBehaviour:
   dialoguePanel: {fileID: 996082930}
   speakerText: {fileID: 0}
   dialogueText: {fileID: 0}
-  choicesContainer: {fileID: 0}
   choiceButtonPrefab: {fileID: 0}
+  choiceContainer: {fileID: 0}
+  npc: {fileID: 0}
 --- !u!1 &1179462177
 GameObject:
   m_ObjectHideFlags: 0
@@ -2956,9 +2957,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f7f88ea317b8df4cba4a888fc8ad6b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueFile: npc_referee.json
+  startNodeId: npc_referee_root
   dialogueManager: {fileID: 1114082155}
-  startNodeId: npc_gingerbread_root
-  jsonFileName: bigDialogueTree.json
+  npcDefinition: {fileID: 11400000, guid: 75362233149c15744bb9dc216b3091a6, type: 2}
 --- !u!61 &1723063795
 BoxCollider2D:
   m_ObjectHideFlags: 0
