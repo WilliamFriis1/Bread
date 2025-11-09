@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     { 
         selectedFighter = fighter; 
         Debug.Log("Selected fighter is: " + selectedFighter.Name);
+        GameManager.Instance.MoveToNextPhase();
     }
 
     public int GetChips() { return chips; }

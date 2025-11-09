@@ -152,6 +152,9 @@ public class OddsManager : MonoBehaviour
 
             Debug.Log("Current bet: " + currentBet);
             Debug.Log("Money Left: " + player.GetChips());
+
+            //If player can make this bet, move to next phase.
+            GameManager.Instance.MoveToNextPhase();
         }
         else
         {
@@ -178,8 +181,6 @@ public class OddsManager : MonoBehaviour
 
     void SelectFighters()
     {
-        
-
         int indexA = rand.Next(0, fighterList.Count);
 
         FighterA = fighterList[indexA];
@@ -227,7 +228,7 @@ public class OddsManager : MonoBehaviour
         //ResetValues();
     }
 
-    void ResetValues()
+    public void ResetValues()
     {
         payout = 0;
 
