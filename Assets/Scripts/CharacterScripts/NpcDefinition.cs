@@ -17,8 +17,10 @@ public class NpcDefinition : ScriptableObject
     public int minBribeAmount = 1;
     public float bribeBonus = 0f;
     public float infoBonus = 0f;
+    [Header("Visuals")]
+    public Sprite characterSprite;
 
-    //Vendor
+    [Header("Vendor type shi")]
     public bool isVendor;
     public string commodityId;
     public int commodityPrice = 1;

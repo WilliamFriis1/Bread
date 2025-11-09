@@ -2,15 +2,27 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
+    [System.Serializable]
+    public struct ChoiceSlot
+    {
+        public GameObject root;
+        public Button button;
+        public TextMeshProUGUI label;
+    }
     [Header("UI References")]
     [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI speakerText;
-    [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private GameObject choiceButtonPrefab;
-    [SerializeField] private Transform choiceContainer;
+    [SerializeField] private TextMeshProUGUI npcText;
+    // [SerializeField] private TextMeshProUGUI speakerText;
+    // [SerializeField] private TextMeshProUGUI dialogueText;
+    // [SerializeField] private GameObject choiceButtonPrefab;
+    // [SerializeField] private Transform choiceContainer;
+    //BOMBA NEW DON'T TOUCH PRETTY PLEASE
+    [SerializeField]
+    private ChoiceSlot[] choiceSlots = new ChoiceSlot[4];
     [Header("Context")]
     [SerializeField] private NpcDefinition npc;
     private TestNPC owningNpc;
@@ -56,32 +68,81 @@ public class DialogueManager : MonoBehaviour
     {
         if (node == null)
         {
-            Debug.LogError("Dialogue node not found!");
             EndDialogue();
             return;
         }
-
         currentNode = node;
-        speakerText.text = node.speaker;
-        dialogueText.text = node.text;
-
-        foreach (Transform child in choiceContainer)
-            Destroy(child.gameObject);
-        if (node.choices != null && node.choices.Count > 0)
+        //
+        if (npcText)
         {
-            foreach (DialogueChoice choice in node.choices)
+            npcText.text = node.text ?? string.Empty;
+        }
+        //
+        for (int i = 0; i < choiceSlots.Length; i++)
+        {
+            var s = choiceSlots[i];
+            if (s.root)
             {
-                GameObject button = Instantiate(choiceButtonPrefab, choiceContainer);
-                var text = button.GetComponentInChildren<TextMeshProUGUI>();
-                text.text = choice.text;
-
-                button.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnChoiceSelected(choice));
+                s.root.SetActive(false);
+            }
+            if (s.button)
+            {
+                s.button.onClick.RemoveAllListeners();
             }
         }
-        else
+        var choices = node.choices ?? new List<DialogueChoice>();
+        int count = Mathf.Min(choices.Count, choiceSlots.Length);
+
+        for (int i = 0; i < count; i++)
+        {
+            var slots = choiceSlots[i];
+            var choice = choices[i];
+
+            if (slots.label)
+            {
+                slots.label.text = choice.text ?? string.Empty;
+            }
+            if (slots.root)
+            {
+                slots.root.SetActive(true);
+            }
+            if (slots.button)
+            {
+                slots.button.onClick.AddListener(() => OnChoiceSelected(choice));
+            }
+        }
+        if (count == 0)
         {
             EndDialogue();
         }
+        // if (node == null)
+        // {
+        //     Debug.LogError("Dialogue node not found!");
+        //     EndDialogue();
+        //     return;
+        // }
+
+        // currentNode = node;
+        // speakerText.text = node.speaker;
+        // dialogueText.text = node.text;
+
+        // foreach (Transform child in choiceContainer)
+        //     Destroy(child.gameObject);
+        // if (node.choices != null && node.choices.Count > 0)
+        // {
+        //     foreach (DialogueChoice choice in node.choices)
+        //     {
+        //         GameObject button = Instantiate(choiceButtonPrefab, choiceContainer);
+        //         var text = button.GetComponentInChildren<TextMeshProUGUI>();
+        //         text.text = choice.text;
+
+        //         button.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnChoiceSelected(choice));
+        //     }
+        // }
+        // else
+        // {
+        //     EndDialogue();
+        // }
     }
 
     private void OnChoiceSelected(DialogueChoice choice)
@@ -92,8 +153,8 @@ public class DialogueManager : MonoBehaviour
             bool handled = DialogueActionResolver.TryResolve(choice, npc, out bool success);
             if (handled)
             {
-                string nextId = success ? choice.gotoOnSuccess : choice.gotoOnFail;
-                var next = GetNode(nextId);
+                // string nextId = success ? choice.gotoOnSuccess : choice.gotoOnFail;
+                var next = GetNode(success ? choice.gotoOnSuccess : choice.gotoOnFail);
                 if (next != null) { ShowNode(next); return; }
                 EndDialogue(); return;
             }
@@ -101,20 +162,19 @@ public class DialogueManager : MonoBehaviour
             // Unknown action? fall back to your old simple roll:
             Debug.Log($"[Dialogue] Unhandled action '{choice.action}' — using fallback roll.");
             bool fallback = Random.value <= choice.successChance;
-            string nextFallback = fallback ? choice.gotoOnSuccess : choice.gotoOnFail;
-            var nextNodeFallback = GetNode(nextFallback);
-            if (nextNodeFallback != null) { ShowNode(nextNodeFallback); return; }
+            var nextFallback = GetNode(fallback ? choice.gotoOnSuccess : choice.gotoOnFail);
+            if (nextFallback != null) { ShowNode(nextFallback); return; }
             EndDialogue(); return;
         }
-
         //Plain goto
         if (!string.IsNullOrEmpty(choice.gotoNode))
         {
             var next = GetNode(choice.gotoNode);
-            if (next != null) { ShowNode(next); return; }
-            EndDialogue(); return;
+            if (next != null)
+            {
+                ShowNode(next); return;
+            }
         }
-
         // nav => end
         EndDialogue();
 
