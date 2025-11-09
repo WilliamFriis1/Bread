@@ -21,6 +21,7 @@ MonoBehaviour:
   minBribeAmount: 1
   bribeBonus: 0
   infoBonus: 0
+  characterSprite: {fileID: 21300000, guid: 53bdc00aacb57c84584c211800ce6d59, type: 3}
   isVendor: 0
   commodityId: 
   commodityPrice: 1

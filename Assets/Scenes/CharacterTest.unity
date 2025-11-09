@@ -206,6 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Phase: 0
+  Day: 0
   nextGamePhase: {fileID: 1407725298}
 --- !u!114 &63926189
 MonoBehaviour:
@@ -622,6 +623,7 @@ GameObject:
   m_Component:
   - component: {fileID: 373650818}
   - component: {fileID: 373650819}
+  - component: {fileID: 373650820}
   m_Layer: 0
   m_Name: Curtains
   m_TagString: Untagged
@@ -700,6 +702,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
+--- !u!95 &373650820
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373650817}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f6729787c4720834b9ab01b5b3ec8666, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &413625119
 GameObject:
   m_ObjectHideFlags: 0
@@ -3801,6 +3825,7 @@ MonoBehaviour:
   m_defaultTexture: {fileID: 2800000, guid: 7df831e52caa051498816680191f0d3b, type: 3}
   m_clickableObjectTexture: {fileID: 2800000, guid: 150a47bdd6467884d9f63b44766704fe,
     type: 3}
+  m_npcObjectTexture: {fileID: 0}
 --- !u!4 &1211273866
 Transform:
   m_ObjectHideFlags: 0
