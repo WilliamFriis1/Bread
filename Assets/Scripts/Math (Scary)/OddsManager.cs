@@ -30,7 +30,7 @@ public class OddsManager : MonoBehaviour
     int payout;
     float multiplier = 1f;
 
-    int moneyRequirement = 500;
+    int targetChips = 110;
 
     System.Random rand = new System.Random();
 
@@ -228,6 +228,7 @@ public class OddsManager : MonoBehaviour
 
     void Fight()
     {
+        SetMultiplier();
         CheckWinner();
         GameManager.Instance.MoveToNextPhase();
     }
@@ -248,7 +249,7 @@ public class OddsManager : MonoBehaviour
 
     public bool CheckIfPlayerWon()
     {
-        return (player.GetChips() > moneyRequirement);
+        return player.GetChips() >= targetChips;
     }
 
     
