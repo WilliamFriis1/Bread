@@ -34,8 +34,6 @@ public class OddsManager : MonoBehaviour
 
     [SerializeField] GameObject currentChipsTextObj;
     [SerializeField] TMP_InputField betInputField;
-    [SerializeField] Button increaseOddsButton;
-    [SerializeField] Button decreaseOddsButton;
     [SerializeField] Button fightButton;
     [SerializeField] Button selectFighterAButton;
     [SerializeField] Button selectFighterBButton;
@@ -44,9 +42,6 @@ public class OddsManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        increaseOddsButton.onClick.AddListener(delegate { RaiseFighterBOdds(0.2f); });
-        decreaseOddsButton.onClick.AddListener(delegate { RaiseFighterAOdds(0.2f); });
-
         selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
         selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
 
@@ -64,10 +59,6 @@ public class OddsManager : MonoBehaviour
         player = GameManager.Instance.Player;
         InitFighterList();
         SelectFighters();
-        TextMeshProUGUI fighterAButtonTextObj = selectFighterAButton.GetComponentInChildren<TextMeshProUGUI>();
-        TextMeshProUGUI fighterBButtonTextObj = selectFighterBButton.GetComponentInChildren<TextMeshProUGUI>();
-        fighterAButtonTextObj.text = $"Place bet on: \n {FighterA.Name}";
-        fighterBButtonTextObj.text = $"Place bet on: \n {FighterB.Name}";
     }
 
     // Update is called once per frame
@@ -92,17 +83,7 @@ public class OddsManager : MonoBehaviour
         {
             betInputField.gameObject.SetActive(false);
         }
-        if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
-        {
-            increaseOddsButton.gameObject.SetActive(true);
-            decreaseOddsButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            increaseOddsButton.gameObject.SetActive(false);
-            decreaseOddsButton.gameObject.SetActive(false);
-        }
-        if(GameManager.Instance.Phase == GameManager.GamePhase.RoundEnd)
+        if(GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
         {
             fightButton.gameObject.SetActive(true);
         }
@@ -111,13 +92,41 @@ public class OddsManager : MonoBehaviour
             fightButton.gameObject.SetActive(false);
         }
     }
+    public void OnRoundEnd()
+    {
+        if (player.GetSelectedFighter().IsWinner())
+        {
+            payout = (int)(currentBet * multiplier);
+            player.AddChips(payout);
+            Debug.Log("Player won " + payout + " chips!");
+        }
 
-/// <summary>
-/// Odds is a number that goes between 0 and 1. 0 means it is guaranteed FighterA will win, and 1 means it is guaranteed FighterB will win.
-/// In short, the *higher* the currentOdds value is, the more likely Fighter B is to win, and vice versa.
-/// Raising the odds for FighterB entails currentOdds being closer to 1. Raising the odds for FighterA entails currentOdds being closer to 0.
-/// That's how the two methods below were made.
-/// </summary>
+        ResetValues();
+        GameManager.Instance.MoveToNextPhase();
+    }
+    void ResetValues()
+    {
+        payout = 0;
+
+        currentBet = 0;
+        multiplier = 1f;
+
+        FighterA = null;
+        FighterB = null;
+        currentOdds = 0.5f;
+
+        betInputField.text = string.Empty;
+
+        InitFighterList();
+        SelectFighters();
+    }
+
+    /// <summary>
+    /// Odds is a number that goes between 0 and 1. 0 means it is guaranteed FighterA will win, and 1 means it is guaranteed FighterB will win.
+    /// In short, the *higher* the currentOdds value is, the more likely Fighter B is to win, and vice versa.
+    /// Raising the odds for FighterB entails currentOdds being closer to 1. Raising the odds for FighterA entails currentOdds being closer to 0.
+    /// That's how the two methods below were made.
+    /// </summary>
 
     void RaiseFighterBOdds(float amount)
     {
@@ -139,11 +148,11 @@ public class OddsManager : MonoBehaviour
 
         if (player.GetSelectedFighter() == FighterA)
         {
-            multiplier = 1f + currentOdds;
+            multiplier = 2f + currentOdds;
         }
         else
         {
-            multiplier = 2f - currentOdds;
+            multiplier = 3f - currentOdds;
         }
     }
 
@@ -197,6 +206,12 @@ public class OddsManager : MonoBehaviour
 
         FighterB = fighterList[indexB];
 
+        //Sets names of Fighters on the select Fighter buttons
+        TextMeshProUGUI fighterAButtonTextObj = selectFighterAButton.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI fighterBButtonTextObj = selectFighterBButton.GetComponentInChildren<TextMeshProUGUI>();
+        fighterAButtonTextObj.text = $"Place bet on: \n {FighterA.Name}";
+        fighterBButtonTextObj.text = $"Place bet on: \n {FighterB.Name}";
+
         Debug.Log("The fighters are: " + FighterA.Name + " and " + FighterB.Name);
     }
 
@@ -212,8 +227,7 @@ public class OddsManager : MonoBehaviour
     void Fight()
     {
         CheckWinner();
-        
-        OnRoundEnd();
+        GameManager.Instance.MoveToNextPhase();
     }
 
     void CheckWinner()
@@ -230,34 +244,7 @@ public class OddsManager : MonoBehaviour
         }
     }
 
-    void OnRoundEnd()
-    {
-        if (player.GetSelectedFighter().IsWinner())
-        {
-            payout = (int)(currentBet * multiplier);
-            player.AddChips(payout);
-            Debug.Log("Player won " + payout + " chips!");
-        }
-
-        //ResetValues();
-    }
-
-    public void ResetValues()
-    {
-        payout = 0;
-
-        currentBet = 0;
-        multiplier = 1f;
-
-        FighterA = null;
-        FighterB = null;
-        currentOdds = 0.5f;
-
-        betInputField.text = string.Empty;
-
-        InitFighterList();
-        SelectFighters();
-    }
+    
 
 
 }
