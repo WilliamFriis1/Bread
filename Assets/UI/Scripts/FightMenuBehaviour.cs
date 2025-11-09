@@ -8,9 +8,11 @@ public class FightMenuBehaviour : MonoBehaviour
     [SerializeField] private Button m_startButton;
     [SerializeField] private GameObject m_overlay;
     [SerializeField] private GameObject m_oddsManagerObj;
+    [SerializeField] private GameObject m_messageBoxObj;
     [SerializeField] private GameObject m_parentObj;
     [SerializeField] private Image m_fighterA;
     [SerializeField] private Image m_fighterB;
+    [SerializeField] private Button m_returnToGameMenuButton;
     [SerializeField] private Sprite m_butterBusterSprite;
     [SerializeField] private Sprite m_leCroissantSprite;
     [SerializeField] private Sprite m_masterCupcakeSprite;
@@ -29,31 +31,45 @@ public class FightMenuBehaviour : MonoBehaviour
     private Vector3 m_fighterBStartPosition;
     private Vector3 m_parentTargetPosition;
     private CanvasGroup m_overlayGroup;
+    private TextMeshProUGUI m_messageBoxText;
 
     #region Unity Methods
     void Start()
     {
         m_lerpHelper = new LerpHelper();
-        m_startButton.onClick.AddListener(delegate { Init(); });
-        m_fadeAnimator = GetComponent<FadeAnimator>();
         m_oddsManager = m_oddsManagerObj.GetComponent<OddsManager>();
         m_fighterAStartPosition = m_fighterA.GetComponent<RectTransform>().localPosition;
         m_fighterBStartPosition = m_fighterB.GetComponent<RectTransform>().localPosition;
         m_parentTargetPosition = m_parentObj.transform.localPosition;
         m_overlayGroup = m_overlay.GetComponent<CanvasGroup>();
-        SetFighterSprites();
-        Vector3 newPos = m_parentObj.transform.localPosition;
-        newPos.y += 1100;
-        m_parentObj.transform.localPosition = newPos;
-        m_overlayGroup.alpha = 0.0f;
+        m_messageBoxText = m_messageBoxObj.GetComponentInChildren<TextMeshProUGUI>();
+        m_startButton.onClick.AddListener(Init);
+        m_startButton.onClick.AddListener(ResetFightMenu);
+        m_returnToGameMenuButton.onClick.AddListener(ResetFightMenu);
+        m_returnToGameMenuButton.onClick.AddListener(m_oddsManager.OnRoundEnd);
+        m_fadeAnimator = GetComponent<FadeAnimator>();
+        ResetFightMenu();
     }
     #endregion
 
     public void Init()
     {
+        m_returnToGameMenuButton.gameObject.SetActive(false);
+        m_messageBoxObj.SetActive(false);
+        SetFighterSprites();
+        m_fighterA.transform.localPosition = m_fighterAStartPosition;
+        m_fighterB.transform.localPosition = m_fighterBStartPosition;
         m_fadeAnimator.FadeIn(m_overlayGroup, 1f);
         StartCoroutine(InitFightScene(fightInitDuration));
         StartCoroutine(StartFight(fightInitDuration, durationToFightStart));
+    }
+
+    public void ResetFightMenu()
+    {
+        Vector3 newPos = m_parentObj.transform.localPosition;
+        newPos.y += 1100;
+        m_parentObj.transform.localPosition = newPos;
+        m_overlayGroup.alpha = 0.0f;
     }
 
     private void SetFighterSprites()
@@ -74,6 +90,9 @@ public class FightMenuBehaviour : MonoBehaviour
 
         RectTransform fighterARect = m_fighterA.GetComponent<RectTransform>();
         RectTransform fighterBRect = m_fighterB.GetComponent<RectTransform>();
+
+        fighterARect.transform.localScale = new Vector3(1,1,1);
+        fighterBRect.transform.localScale = new Vector3(1,1,1);
 
         fighterARect.transform.localScale *= scaleFactor;
         fighterBRect.transform.localScale *= scaleFactor;
@@ -131,5 +150,8 @@ public class FightMenuBehaviour : MonoBehaviour
         }
         m_lerpHelper.SetFinalPosition(m_fighterA.gameObject, fighterATargetPosition);
         m_lerpHelper.SetFinalPosition(m_fighterB.gameObject, fighterBTargetPosition);
+        yield return new WaitForSeconds(durationToFightStart);
+        m_returnToGameMenuButton.gameObject.SetActive(true);
+        m_messageBoxObj.SetActive(true);
     }
 }

@@ -26,18 +26,18 @@ public class EvalBarBehaviour : MonoBehaviour
         m_fightMenuBehaviour = GetComponent<FightMenuBehaviour>();
         if (m_fightMenuBehaviour != null)
             m_fightMenuBehaviour.OnFightStarted += UpdateEvalBar;
-
-    }private void OnDisable()
+    }
+    private void OnDisable()
     {
         m_fightMenuBehaviour = GetComponent<FightMenuBehaviour>();
         if (m_fightMenuBehaviour != null)
             m_fightMenuBehaviour.OnFightStarted -= UpdateEvalBar;
-
     }
     #endregion
 
     private void UpdateEvalBar(float fightDuration, Fighter fighterA, Fighter fighterB)
     {
+        m_evalIconObj.transform.localPosition = m_evalIconOrigin;
         m_fighterAText.text = fighterA.Name;
         m_fighterBText.text = fighterB.Name;
 
@@ -59,5 +59,6 @@ public class EvalBarBehaviour : MonoBehaviour
            m_lerpHelper.LerpToTargetPosition(m_evalIconObj, startPosition, finalEvalIconPosition, t);
            yield return null;
         }
+        m_lerpHelper.SetFinalPosition(m_evalIconObj, finalEvalIconPosition);
     }
 }
