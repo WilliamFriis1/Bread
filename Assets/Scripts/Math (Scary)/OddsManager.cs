@@ -19,6 +19,8 @@ public class OddsManager : MonoBehaviour
     Player player;
     Fighter FighterA;
     Fighter FighterB;
+    public Fighter GetFighterA { get { return FighterA; } }
+    public Fighter GetFighterB { get { return FighterB; } }
 
     float currentOdds = 0.5f;
     float minimumOdds = 0.25f;
@@ -34,8 +36,8 @@ public class OddsManager : MonoBehaviour
     [SerializeField] Button increaseOddsButton;
     [SerializeField] Button decreaseOddsButton;
     [SerializeField] Button fightButton;
-    [SerializeField] Button selectFighterA;
-    [SerializeField] Button selectFighterB;
+    [SerializeField] Button selectFighterAButton;
+    [SerializeField] Button selectFighterBButton;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,8 +45,8 @@ public class OddsManager : MonoBehaviour
         increaseOddsButton.onClick.AddListener(delegate { RaiseFighterBOdds(0.2f); });
         decreaseOddsButton.onClick.AddListener(delegate { RaiseFighterAOdds(0.2f); });
 
-        selectFighterA.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
-        selectFighterB.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
+        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
 
         betInputField.onEndEdit.AddListener(delegate {PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
@@ -59,6 +61,10 @@ public class OddsManager : MonoBehaviour
         player = GameManager.Instance.Player;
         InitFighterList();
         SelectFighters();
+        TextMeshProUGUI fighterAButtonTextObj = selectFighterAButton.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI fighterBButtonTextObj = selectFighterBButton.GetComponentInChildren<TextMeshProUGUI>();
+        fighterAButtonTextObj.text = $"Place bet on: \n {FighterA.Name}";
+        fighterBButtonTextObj.text = $"Place bet on: \n {FighterB.Name}";
     }
 
     // Update is called once per frame
@@ -66,13 +72,13 @@ public class OddsManager : MonoBehaviour
     {
         if(GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
         {
-            selectFighterA.gameObject.SetActive(true);
-            selectFighterB.gameObject.SetActive(true);
+            selectFighterAButton.gameObject.SetActive(true);
+            selectFighterBButton.gameObject.SetActive(true);
         }
         else
         {
-            selectFighterA.gameObject.SetActive(false);
-            selectFighterB.gameObject.SetActive(false);
+            selectFighterAButton.gameObject.SetActive(false);
+            selectFighterBButton.gameObject.SetActive(false);
         }
         if (GameManager.Instance.Phase == GameManager.GamePhase.PlaceBet)
         {
@@ -168,7 +174,6 @@ public class OddsManager : MonoBehaviour
         {
             fighter.Reset();
         }
-
     }
 
     void SelectFighters()
@@ -186,7 +191,7 @@ public class OddsManager : MonoBehaviour
 
         FighterB = fighterList[indexB];
 
-        Debug.Log("The fighters are: " + FighterA.name + " and " + FighterB.name);
+        Debug.Log("The fighters are: " + FighterA.Name + " and " + FighterB.Name);
     }
 
     void Fight()
@@ -219,7 +224,7 @@ public class OddsManager : MonoBehaviour
             Debug.Log("Player won " + payout + " chips!");
         }
 
-        ResetValues();
+        //ResetValues();
     }
 
     void ResetValues()

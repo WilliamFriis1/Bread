@@ -7,6 +7,7 @@ public class SwingAnimation : MonoBehaviour
 
     private float m_initialAngle;
 
+    #region Unity Methods
     void Start()
     {
         m_initialAngle = transform.eulerAngles.z;
@@ -17,4 +18,5 @@ public class SwingAnimation : MonoBehaviour
         float m_targetAngle = Mathf.Sin(Time.time * m_speed) * m_angle;
         transform.rotation = Quaternion.Euler(0, 0, m_initialAngle + m_targetAngle);
     }
+    #endregion
 }
