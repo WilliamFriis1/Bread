@@ -32,12 +32,14 @@ public class OddsManager : MonoBehaviour
 
     System.Random rand = new System.Random();
 
+    [SerializeField] GameObject currentChipsTextObj;
     [SerializeField] TMP_InputField betInputField;
     [SerializeField] Button increaseOddsButton;
     [SerializeField] Button decreaseOddsButton;
     [SerializeField] Button fightButton;
     [SerializeField] Button selectFighterAButton;
     [SerializeField] Button selectFighterBButton;
+    private TextMeshProUGUI currentChipsText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -51,6 +53,7 @@ public class OddsManager : MonoBehaviour
         betInputField.onEndEdit.AddListener(delegate {PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
         fightButton.onClick.AddListener(Fight);
+        currentChipsText = currentChipsTextObj.GetComponent<TextMeshProUGUI>();
     }
 
     private void Awake()
@@ -70,6 +73,7 @@ public class OddsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
         if(GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
         {
             selectFighterAButton.gameObject.SetActive(true);
