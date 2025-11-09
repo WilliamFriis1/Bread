@@ -30,6 +30,8 @@ public class OddsManager : MonoBehaviour
     int payout;
     float multiplier = 1f;
 
+    int moneyRequirement = 500;
+
     System.Random rand = new System.Random();
 
     [SerializeField] GameObject currentChipsTextObj;
@@ -242,6 +244,11 @@ public class OddsManager : MonoBehaviour
         {
             FighterB.SetAsWinner();
         }
+    }
+
+    public bool CheckIfPlayerWon()
+    {
+        return (player.GetChips() > moneyRequirement);
     }
 
     

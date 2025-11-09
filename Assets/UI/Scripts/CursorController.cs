@@ -12,6 +12,7 @@ public class CursorController : MonoBehaviour
     public static CursorController Instance;
     [SerializeField] private Texture2D m_defaultTexture;
     [SerializeField] private Texture2D m_clickableObjectTexture;
+    [SerializeField] private Texture2D m_npcObjectTexture;
     private Vector2 m_clickPosition;
 
     #region Unity Methods

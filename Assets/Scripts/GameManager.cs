@@ -4,6 +4,13 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameDay
+    {
+        Day0,
+        Day1, 
+        Day2,
+        Day3
+    }
 
     public enum GamePhase
     {
@@ -42,6 +49,7 @@ public class GameManager : MonoBehaviour
     public Player Player { get; set; }
     public OddsManager OddsManager { get; set; }
     public GamePhase Phase;
+    public GameDay Day;
 
     [SerializeField] Button nextGamePhase;
 
@@ -70,8 +78,43 @@ public class GameManager : MonoBehaviour
         if((int)(Phase)> 3)
         {
             Phase = 0;
+            MoveToNextDay();
         }
         Debug.Log(Phase.ToString());
+    }
+
+    public void MoveToNextDay()
+    {
+        Day++;
+        if((int)(Day) == 4)
+        {
+            CheckWinCondition();
+        }
+    }
+    
+    public void CheckWinCondition()
+    {
+        if (OddsManager.CheckIfPlayerWon())
+        {
+            Win();
+        }
+        else
+        {
+            Lose();
+        }
+
+    }
+
+    void Win()
+    {
+        //Stub for winning
+        Debug.Log("Win");
+    }
+
+    void Lose()
+    {
+        //Stub for losing
+        Debug.Log("Lose");
     }
 
 
