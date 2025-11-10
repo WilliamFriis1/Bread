@@ -62,10 +62,11 @@ public class GameManager : MonoBehaviour
         //New made by Gustaf, shoutout poland (aka initial setup)
         Day = GameDay.Day0;
         dayDirector.SetupDay(Day);
-        encounterDirector.StartNpcEncounter();
+        Phase = GamePhase.RoundStart;
+        // encounterDirector.StartNpcEncounter();
 
 
-        Phase = GamePhase.SpeakingToNPC;
+        // Phase = GamePhase.SpeakingToNPC;
     }
 
     private void Awake()
@@ -93,8 +94,14 @@ public class GameManager : MonoBehaviour
         {
             Phase = 0;
             MoveToNextDay();
+            return;
         }
         Debug.Log(Phase.ToString());
+        // Start encounter only when we reach SpeakingToNPC
+        if (Phase == GamePhase.SpeakingToNPC)
+        {
+            encounterDirector.StartNpcEncounter();
+        }
     }
 
     public void MoveToNextDay()

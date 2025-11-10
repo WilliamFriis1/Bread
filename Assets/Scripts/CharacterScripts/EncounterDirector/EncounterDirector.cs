@@ -51,13 +51,7 @@ public class EncounterDirector : MonoBehaviour
         var ev = randomizer.GetRandomEvent();
         if (ev is EventNpcAdapter && eventRunner != null)
         {
-            eventRunner.Execute(ev);
+            StartNpcEncounter();
         }
-        else if (ev is EventNpcAdapter == false && ev != null)
-        {
-            Debug.Log("Random event returned a non event asset, so it skipped");
-        }
-        StartNpcEncounter();
     }
-
 }
