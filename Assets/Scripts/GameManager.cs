@@ -7,9 +7,9 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Button nextGamePhase;
     [SerializeField] private CanvasGroup m_gameScene;
-    [SerializeField] private CanvasGroup m_winScene;
-    [SerializeField] private CanvasGroup m_loseScene;
-    [SerializeField] private CanvasGroup m_pauseScene;
+    // [SerializeField] private CanvasGroup m_winScene;
+    // [SerializeField] private CanvasGroup m_loseScene;
+    // [SerializeField] private CanvasGroup m_pauseScene;
     public enum GameDay
     {
         Day0, Day1, Day2, Day3
@@ -18,10 +18,14 @@ public class GameManager : MonoBehaviour
     {
         RoundStart, PlaceBet, SpeakingToNPC, RoundEnd
     }
+    [Header("References")]
     public Player Player { get; set; }
     public OddsManager OddsManager { get; set; }
     public GamePhase Phase;
     public GameDay Day;
+    //New added by gussy
+    public DayDirector dayDirector;
+    public EncounterDirector encounterDirector;
 
     private static GameManager instance;
     private FadeAnimator m_fadeAnimator;
@@ -52,8 +56,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         nextGamePhase.onClick.AddListener(MoveToNextPhase);
-        m_winScene.blocksRaycasts = false;
-        m_loseScene.blocksRaycasts = false;
+        // m_winScene.blocksRaycasts = false;
+        // m_loseScene.blocksRaycasts = false;
+
+        //New made by Gustaf, shoutout poland (aka initial setup)
+        Day = GameDay.Day0;
+        dayDirector.SetupDay(Day);
+        encounterDirector.StartNpcEncounter();
+
+
         Phase = GamePhase.SpeakingToNPC;
     }
 
@@ -70,8 +81,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         m_fadeAnimator = GetComponent<FadeAnimator>();
-        m_winScene.alpha = 0.0f;
-        m_loseScene.alpha = 0.0f;
+        // m_winScene.alpha = 0.0f;
+        // m_loseScene.alpha = 0.0f;
         m_gameScene.alpha = 1.0f;
     }
 
@@ -90,6 +101,10 @@ public class GameManager : MonoBehaviour
     {
         Day++;
         CheckWinCondition();
+
+        //new changes
+        dayDirector.SetupDay(Day);
+        encounterDirector.StartNpcEncounter();
 
         //if ((int)(Day) == 4)
         //{
@@ -124,19 +139,19 @@ public class GameManager : MonoBehaviour
     IEnumerator FadeToWin()
     {
         m_gameScene.blocksRaycasts = false;
-        m_loseScene.blocksRaycasts = false;
+        // m_loseScene.blocksRaycasts = false;
         m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        m_fadeAnimator.FadeIn(m_winScene, 1f);
-        m_winScene.blocksRaycasts = true;
+        // m_fadeAnimator.FadeIn(m_winScene, 1f);
+        // m_winScene.blocksRaycasts = true;
     }
     IEnumerator FadeToLose()
     {
         m_gameScene.blocksRaycasts = false;
-        m_winScene.blocksRaycasts = false;
+        // m_winScene.blocksRaycasts = false;
         m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        m_fadeAnimator.FadeIn(m_loseScene, 1f);
-        m_loseScene.blocksRaycasts = true;
+        // m_fadeAnimator.FadeIn(m_loseScene, 1f);
+        // m_loseScene.blocksRaycasts = true;
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class EncounterDirector : MonoBehaviour
@@ -5,6 +6,30 @@ public class EncounterDirector : MonoBehaviour
     [SerializeField] private CharacterSlot slot;
     [SerializeField] private Randomizer randomizer;
     [SerializeField] private EventRunner eventRunner;
+    [ContextMenu("Print the NPC queue (preview)")]
+    public void PrintQueuePreview()
+    {
+        if (randomizer == null)
+        {
+            Debug.LogWarning("EncounterDirector: Randomizer ref is missing.");
+            return;
+        }
+
+        var arr = randomizer.NpcOrder.ToArray(); // safe: does NOT dequeue
+        if (arr.Length == 0)
+        {
+            Debug.Log("[Randomizer] Queue is EMPTY. Did you call SetNpcs() yet?");
+            return;
+        }
+
+        string Label(NpcDefinition n) =>
+            n == null ? "<null>" :
+            !string.IsNullOrWhiteSpace(n.displayName) ? n.displayName :
+            !string.IsNullOrWhiteSpace(n.npcId) ? n.npcId : n.name;
+
+        var names = arr.Select(Label);
+        Debug.Log("[Randomizer] Today's NPC queue:\n - " + string.Join("\n - ", names));
+    }
     public void StartNpcEncounter()
     {
         if (slot == null || randomizer == null)
@@ -24,63 +49,15 @@ public class EncounterDirector : MonoBehaviour
     public void FinishNpcAndEvent()
     {
         var ev = randomizer.GetRandomEvent();
-        if (ev != null && ev.archetype == NpcArchetype.Event)
+        if (ev is EventNpcAdapter && eventRunner != null)
         {
-            if (eventRunner != null)
-            {
-                eventRunner.Execute(ev);
-            }
-            else
-            {
-                Debug.Log("No eventrunner assigned. Event skipped");
-            }
+            eventRunner.Execute(ev);
+        }
+        else if (ev is EventNpcAdapter == false && ev != null)
+        {
+            Debug.Log("Random event returned a non event asset, so it skipped");
         }
         StartNpcEncounter();
     }
-}
-public class EventRunner : MonoBehaviour
-{
-    [SerializeField] private GameManager gm;
 
-    public void Execute(NpcDefinition ev)
-    {
-        if (ev == null || ev.archetype != NpcArchetype.Event) return;
-        if (gm == null) return;
-
-        var player = gm.Player;
-        var odds = gm.OddsManager;
-
-        switch (ev.eventKind)
-        {
-            case EventKind.MoneyDelta:
-                if (player != null) player.AddChips(ev.moneyDelta); // negative lowers money
-                break;
-
-            case EventKind.GiveItem:
-                // Single-slot “flour”
-                if (player != null && (string.IsNullOrEmpty(ev.itemId) || ev.itemId == "flour"))
-                    player.GiveFlourFree();
-                break;
-
-            case EventKind.TakeItem:
-                if (player != null && (string.IsNullOrEmpty(ev.itemId) || ev.itemId == "flour"))
-                    player.TakeFlourIfAny();
-                break;
-
-            case EventKind.OddsDelta:
-                if (odds != null) ApplyOddsDelta(odds, ev.oddsDelta);
-                break;
-
-            case EventKind.InfoPopup:
-                if (!string.IsNullOrEmpty(ev.infoMessage))
-                    Debug.Log($"[Event Info] {ev.infoMessage}");
-                break;
-        }
-    }
-    private void ApplyOddsDelta(OddsManager odds, float delta)
-    {
-        if (delta > 0f) odds.RaiseFighterAOdds(delta);
-        else if (delta < 0f) odds.RaiseFighterBOdds(-delta);
-        // delta == 0 -> no change
-    }
 }

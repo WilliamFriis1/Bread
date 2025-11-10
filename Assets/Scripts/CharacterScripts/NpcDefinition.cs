@@ -3,7 +3,6 @@ using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 
 public enum NpcArchetype { Coach, Referee, Dealer, Gingerbread, Event }
-public enum EventKind { None, MoneyDelta, GiveItem, TakeItem, OddsDelta, InfoPopup }
 
 [CreateAssetMenu(menuName = "NPC/NpcDefinition")]
 public class NpcDefinition : ScriptableObject
@@ -26,12 +25,4 @@ public class NpcDefinition : ScriptableObject
     public bool isVendor;
     public string commodityId;
     public int commodityPrice = 1;
-
-    [Header("Event payload")]
-    public EventKind eventKind = EventKind.None;
-    public int moneyDelta = 0;
-    public string itemId = "";
-    public int itemDelta = 0;
-    public float oddsDelta = 0f;
-    [TextArea] public string infoMessage = "";
 }
