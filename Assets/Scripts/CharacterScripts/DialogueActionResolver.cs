@@ -29,7 +29,7 @@ public static class DialogueActionResolver
                 }
                 return true;
 
-            case "BRIBE_COACH":
+            case "BRIBE":
                 success = Random.value <= choice.successChance;
                 if (success)
                 {
@@ -41,6 +41,16 @@ public static class DialogueActionResolver
                     odds.RaiseFighterBOdds(0.08f);
                     Debug.Log("[DialogueAction] BRIBE fail, fighter B odds increased.");
                 }
+                return true;
+
+            case "PICKUP_CHIPS":
+                if (gm?.Player != null)
+                {
+                    int coinAmount = Random.Range(10, 30);
+                    gm.Player.AddChips(coinAmount);
+                    Debug.Log($"[DialogueAction] Player picked up {coinAmount} coins.");
+                }
+                success = true;
                 return true;
 
             default:

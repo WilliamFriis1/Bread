@@ -78,7 +78,6 @@ public class DialogueManager : MonoBehaviour
             npcText.text = node.text ?? string.Empty;
         }
 
-        // Execute any special action tied to this node
         if (!string.IsNullOrEmpty(node.action))
         {
             switch (node.action)
