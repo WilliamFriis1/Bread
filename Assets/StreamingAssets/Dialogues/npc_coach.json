@@ -52,7 +52,7 @@
       "speaker": "player",
       "text": "It would be such a shame if, let's say, they found something in the lockers. Indeed a great shame that might require… financial compensation.",
       "choices": [
-        { "id": "c1", "text": "Offer flour as payment", "action": "BRIBE_COACH", "successChance": 0.7, "gotoOnSuccess": "npc_coach_bribe_success", "gotoOnFail": "npc_coach_bribe_fail" },
+        { "id": "c1", "text": "Offer flour as payment", "action": "BRIBE", "successChance": 0.7, "gotoOnSuccess": "npc_coach_bribe_success", "gotoOnFail": "npc_coach_bribe_fail" },
         { "id": "c2", "text": "Nevermind", "gotoNode": "npc_coach_end" }
       ]
     },

@@ -25,7 +25,7 @@
       "speaker": "player",
       "text": "You look like you know something lil guy. Care to spill it out?  ",
       "choices": [
-        { "id": "c1", "text": "Ask for information", "gotoNode": "npc_gingerbread4_success" }
+        { "id": "c1", "text": "Ask for information", "action": "SEEK_INFO", "successChance": 1, "gotoOnSuccess": "npc_gingerbread4_success" }
       ]
     },
     {

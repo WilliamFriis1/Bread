@@ -6,7 +6,7 @@
       "speaker": "narrator",
       "text": "You see all the gingerbread people in line ready to gamble away their chocolate chips. Nature is healing.",
       "choices": [
-        { "id": "c1", "text": "chat", "gotoNode": "npc_gingerbread1_chat" },
+        { "id": "c1", "text": "Chat", "gotoNode": "npc_gingerbread1_chat" },
         { "id": "c2", "text": "Seek for information", "gotoNode": "npc_gingerbread1_seek" },
         { "id": "c3", "text": "Ignore him", "gotoNode": "npc_gingerbread1_end" }
       ]
@@ -25,7 +25,7 @@
       "speaker": "player",
       "text": "It’s 5 o’clock, time to spill the tea. Have you got something?",
       "choices": [
-        { "id": "c1", "text": "Ask for information", "gotoNode": "npc_gingerbread1_success" }
+        { "id": "c1", "text": "Ask for information", "action": "SEEK_INFO", "successChance": 1, "gotoOnSuccess": "npc_gingerbread1_success" }
       ]
     },
     {

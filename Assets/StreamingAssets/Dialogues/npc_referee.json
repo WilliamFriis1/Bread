@@ -52,7 +52,7 @@
       "speaker": "player",
       "text": "You looking abit rough lately, think I have exacly what you need. ",
       "choices": [
-        { "id": "c1", "text": "Bribe him", "action": "BRIBE_REF", "successChance": 0.4, "gotoOnSuccess": "npc_referee_bribe_success", "gotoOnFail": "npc_referee_bribe_fail" },
+        { "id": "c1", "text": "Bribe him", "action": "BRIBE", "successChance": 0.4, "gotoOnSuccess": "npc_referee_bribe_success", "gotoOnFail": "npc_referee_bribe_fail" },
         { "id": "c2", "text": "Nevermind", "gotoNode": "npc_referee_end" }
       ]
     },

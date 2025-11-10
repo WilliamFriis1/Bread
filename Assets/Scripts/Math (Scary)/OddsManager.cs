@@ -130,14 +130,14 @@ public class OddsManager : MonoBehaviour
     /// That's how the two methods below were made.
     /// </summary>
 
-    void RaiseFighterBOdds(float amount)
+    public void RaiseFighterBOdds(float amount)
     {
         currentOdds = Mathf.Clamp(currentOdds + amount, minimumOdds, maximumOdds);
         SetMultiplier();
         Debug.Log(currentOdds);
     }
 
-    void RaiseFighterAOdds(float amount)
+    public void RaiseFighterAOdds(float amount)
     {
         currentOdds = Mathf.Clamp(currentOdds - amount, minimumOdds, maximumOdds);
         SetMultiplier();
