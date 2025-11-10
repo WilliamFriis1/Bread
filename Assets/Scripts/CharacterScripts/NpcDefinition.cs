@@ -2,13 +2,15 @@ using Ink.Runtime;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 
-public enum NpcArchetype { Coach, Referee, Dealer, Gingerbread }
+public enum NpcArchetype { Coach, Referee, Dealer, Gingerbread, Event }
+public enum EventKind { None, MoneyDelta, GiveItem, TakeItem, OddsDelta, InfoPopup }
 
 [CreateAssetMenu(menuName = "NPC/NpcDefinition")]
 public class NpcDefinition : ScriptableObject
 {
     public string npcId;
     public NpcArchetype archetype;
+
     [Header("Dialogue (StreamingAssets)")]
     public string dialogueFile;
     public string displayName;
@@ -20,8 +22,16 @@ public class NpcDefinition : ScriptableObject
     [Header("Visuals")]
     public Sprite characterSprite;
 
-    [Header("Vendor type shi")]
+    [Header("Vendor options")]
     public bool isVendor;
     public string commodityId;
     public int commodityPrice = 1;
+
+    [Header("Event payload")]
+    public EventKind eventKind = EventKind.None;
+    public int moneyDelta = 0;
+    public string itemId = "";
+    public int itemDelta = 0;
+    public float OddsDelta = 0f;
+    [TextArea] public string infoMessage = "";
 }

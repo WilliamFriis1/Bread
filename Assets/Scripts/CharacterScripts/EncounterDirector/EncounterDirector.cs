@@ -3,7 +3,8 @@ using UnityEngine;
 public class EncounterDirector : MonoBehaviour
 {
     [SerializeField] private CharacterSlot slot;
-    [SerializeField] private NpcRandomizer randomizer;
+    [SerializeField] private Randomizer randomizer;
+    [SerializeField] private EventRunner eventRunner;
     public void StartNpcEncounter()
     {
         if (slot == null || randomizer == null)
@@ -11,14 +12,69 @@ public class EncounterDirector : MonoBehaviour
             Debug.Log("Shit's not working, type shi (aka,missing refs)");
             return;
         }
-        randomizer.AdvanceRound();
+        var def = randomizer.GetNextNpc();
 
-        var def = randomizer.PickDefinition();
         if (def == null)
         {
-            Debug.Log("NO NPC DEFINITION FOUND, FUUUUCK");
+            Debug.Log("All npc's spawned for the day");
             return;
         }
         slot.Present(def); // idk man, you just get that shit working. 
+    }
+    public void FinishNpcAndEvent()
+    {
+        var ev = randomizer.GetRandomEvent();
+        if (ev != null && ev.archetype == NpcArchetype.Event)
+        {
+            if (eventRunner != null)
+            {
+                eventRunner.Execute(ev);
+            }
+            else
+            {
+                Debug.Log("No eventrunner assigned. Event skipped");
+            }
+        }
+        StartNpcEncounter();
+    }
+}
+public class EventRunner : MonoBehaviour
+{
+    [SerializeField] private GameManager gm;
+
+    public void Execute(NpcDefinition ev)
+    {
+        if (ev == null || ev.archetype != NpcArchetype.Event) return;
+        if (gm == null) return;
+
+        var player = gm.Player;
+        var odds = gm.OddsManager;
+
+        switch (ev.eventKind)
+        {
+            case EventKind.MoneyDelta:
+                if (player != null) player.AddChips(ev.moneyDelta); // negative lowers money
+                break;
+
+            case EventKind.GiveItem:
+                // single item inevtory give flour
+                if (player != null && (string.IsNullOrEmpty(ev.itemId) || ev.itemId == "flour"))
+                    player.GiveFlourFree();
+                break;
+
+            case EventKind.TakeItem:
+                if (player != null && (string.IsNullOrEmpty(ev.itemId) || ev.itemId == "flour"))
+                    player.TakeFlourIfAny();
+                break;
+
+            case EventKind.OddsDelta:
+                if (odds != null) odds.AddModifier(ev.oddsDelta);
+                break;
+
+            case EventKind.InfoPopup:
+                if (!string.IsNullOrEmpty(ev.infoMessage))
+                    Debug.Log($"[Event Info] {ev.infoMessage}");
+                break;
+        }
     }
 }
