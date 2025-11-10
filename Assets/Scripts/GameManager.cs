@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CanvasGroup m_gameScene;
     [SerializeField] private CanvasGroup m_winScene;
     [SerializeField] private CanvasGroup m_loseScene;
-    //[SerializeField] private CanvasGroup m_pauseScene;
+    [SerializeField] private CanvasGroup m_pauseScene;
     public enum GameDay
     {
         Day0, Day1, Day2, Day3
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
                 return null;
             }
 
-            if(instance == null)
+            if (instance == null)
             {
                 //If the application is playing, but there isn't a game manager, make one.
                 //doesnt work
@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
         nextGamePhase.onClick.AddListener(MoveToNextPhase);
         m_winScene.blocksRaycasts = false;
         m_loseScene.blocksRaycasts = false;
+        Phase = GamePhase.SpeakingToNPC;
     }
 
     private void Awake()
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
     public void MoveToNextPhase()
     {
         Phase++;
-        if((int)(Phase)> 3)
+        if ((int)(Phase) > 3)
         {
             Phase = 0;
             MoveToNextDay();
@@ -95,7 +96,7 @@ public class GameManager : MonoBehaviour
         //    CheckWinCondition();
         //}
     }
-    
+
     public void CheckWinCondition()
     {
         if (OddsManager.CheckIfPlayerWon())

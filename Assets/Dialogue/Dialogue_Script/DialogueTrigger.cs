@@ -16,7 +16,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (dialogueManager == null)
         {
-            dialogueManager = FindObjectOfType<DialogueManager>();
+            dialogueManager = FindFirstObjectByType<DialogueManager>();
         }
     }
 
