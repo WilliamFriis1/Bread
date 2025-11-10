@@ -75,7 +75,18 @@ public class DialogueManager : MonoBehaviour
         //
         if (npcText)
         {
-            npcText.text = node.text ?? string.Empty;
+            string textToShow = node.text ?? string.Empty;
+
+            // Inject fighter names
+            var odds = GameManager.Instance?.OddsManager;
+            if (odds != null)
+            {
+                textToShow = textToShow
+                    .Replace("{fighterA}", odds.GetFighterA?.Name ?? "Fighter A")
+                    .Replace("{fighterB}", odds.GetFighterB?.Name ?? "Fighter B");
+            }
+
+            npcText.text = textToShow;
         }
 
         if (!string.IsNullOrEmpty(node.action))
