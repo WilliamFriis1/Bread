@@ -19,12 +19,12 @@ public static class DialogueActionResolver
                 success = Random.value <= choice.successChance;
                 if (success)
                 {
-                    odds.RaiseFighterAOdds(0.05f);
+                    odds.RaiseFighterAOdds(0.2f);
                     Debug.Log("[DialogueAction] SEEK_INFO success, fighter A odds increased.");
                 }
                 else
                 {
-                    odds.RaiseFighterBOdds(0.05f);
+                    odds.RaiseFighterBOdds(0.2f);
                     Debug.Log("[DialogueAction] SEEK_INFO fail, fighter B odds increased.");
                 }
                 return true;
@@ -33,12 +33,12 @@ public static class DialogueActionResolver
                 success = Random.value <= choice.successChance;
                 if (success)
                 {
-                    odds.RaiseFighterAOdds(0.08f);
+                    odds.RaiseFighterAOdds(0.35f);
                     Debug.Log("[DialogueAction] BRIBE success,  fighter A odds increased.");
                 }
                 else
                 {
-                    odds.RaiseFighterBOdds(0.08f);
+                    odds.RaiseFighterBOdds(0.35f);
                     Debug.Log("[DialogueAction] BRIBE fail, fighter B odds increased.");
                 }
                 return true;

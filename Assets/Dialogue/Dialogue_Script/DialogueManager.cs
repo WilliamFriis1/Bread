@@ -87,10 +87,10 @@ public class DialogueManager : MonoBehaviour
                     Debug.Log($"[Dialogue] Removed {node.reducedAmount} chips from player.");
                     break;
 
-                case "add_chips":
-                    GameManager.Instance.Player.AddChips(node.addedAmount);
-                    Debug.Log($"[Dialogue] Added {node.addedAmount} chips to player.");
-                    break;
+                //case "add_chips":
+                //    GameManager.Instance.Player.AddChips(node.addedAmount);
+                //    Debug.Log($"[Dialogue] Added {node.addedAmount} chips to player.");
+                //    break;
 
                 default:
                     Debug.LogWarning($"[Dialogue] Unknown node action: {node.action}");
