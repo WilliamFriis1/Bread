@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ public class DialogueNode
     public string id;
     public string speaker;
     public string text;
+    public string action;
+    public int reducedAmount = 20;
+    public int addedAmount = 10;
     public List<DialogueChoice> choices;
 }
 

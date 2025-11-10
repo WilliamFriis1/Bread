@@ -77,6 +77,28 @@ public class DialogueManager : MonoBehaviour
         {
             npcText.text = node.text ?? string.Empty;
         }
+
+        // Execute any special action tied to this node
+        if (!string.IsNullOrEmpty(node.action))
+        {
+            switch (node.action)
+            {
+                case "remove_chips":
+                    GameManager.Instance.Player.RemoveChips(node.reducedAmount);
+                    Debug.Log($"[Dialogue] Removed {node.reducedAmount} chips from player.");
+                    break;
+
+                case "add_chips":
+                    GameManager.Instance.Player.AddChips(node.addedAmount);
+                    Debug.Log($"[Dialogue] Added {node.addedAmount} chips to player.");
+                    break;
+
+                default:
+                    Debug.LogWarning($"[Dialogue] Unknown node action: {node.action}");
+                    break;
+            }
+        }
+
         //
         for (int i = 0; i < choiceSlots.Length; i++)
         {
