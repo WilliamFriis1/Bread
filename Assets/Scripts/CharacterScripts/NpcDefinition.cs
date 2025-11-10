@@ -32,6 +32,6 @@ public class NpcDefinition : ScriptableObject
     public int moneyDelta = 0;
     public string itemId = "";
     public int itemDelta = 0;
-    public float OddsDelta = 0f;
+    public float oddsDelta = 0f;
     [TextArea] public string infoMessage = "";
 }

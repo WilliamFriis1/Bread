@@ -57,7 +57,7 @@ public class EventRunner : MonoBehaviour
                 break;
 
             case EventKind.GiveItem:
-                // single item inevtory give flour
+                // Single-slot “flour”
                 if (player != null && (string.IsNullOrEmpty(ev.itemId) || ev.itemId == "flour"))
                     player.GiveFlourFree();
                 break;
@@ -68,7 +68,7 @@ public class EventRunner : MonoBehaviour
                 break;
 
             case EventKind.OddsDelta:
-                if (odds != null) odds.AddModifier(ev.oddsDelta);
+                if (odds != null) ApplyOddsDelta(odds, ev.oddsDelta);
                 break;
 
             case EventKind.InfoPopup:
@@ -76,5 +76,11 @@ public class EventRunner : MonoBehaviour
                     Debug.Log($"[Event Info] {ev.infoMessage}");
                 break;
         }
+    }
+    private void ApplyOddsDelta(OddsManager odds, float delta)
+    {
+        if (delta > 0f) odds.RaiseFighterAOdds(delta);
+        else if (delta < 0f) odds.RaiseFighterBOdds(-delta);
+        // delta == 0 -> no change
     }
 }
