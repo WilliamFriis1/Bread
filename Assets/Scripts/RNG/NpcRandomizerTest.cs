@@ -42,7 +42,7 @@ public class NpcRandomizerTest : MonoBehaviour
             {
                 if (Random.Range(0, odds) < spawnedNpcs[x])
                 {
-                    NpcOrder.Enqueue(NpcList[x].Npc);
+                    //NpcOrder.Enqueue(NpcList[x].Npc);
                     spawnedNpcs[x] -= 1;
                     break;
                 }
@@ -71,7 +71,7 @@ public class NpcRandomizerTest : MonoBehaviour
                 {
                     if (Random.Range(0, totalWeights) < randomEvent.Odds)
                     {
-                        newNPC.GetComponent<TestNPC>().OnEnd.AddListener(() => randomEvent.Event.Invoke());
+                        //newNPC.GetComponent<TestNPC>().OnEnd.AddListener(() => randomEvent.Event.Invoke());
                         break;
                     }
 
@@ -101,18 +101,4 @@ public class NpcRandomizerTest : MonoBehaviour
         Destroy(spawnedObject);
         SpawnNext();
     }
-}
-
-[Serializable]
-public class ToSpawn
-{
-    public GameObject Npc;
-    public int Amount;
-}
-
-[Serializable]
-public class RandomEvent
-{
-    public UnityEvent Event;
-    public float Odds;
 }
