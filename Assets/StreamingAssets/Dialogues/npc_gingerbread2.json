@@ -31,7 +31,7 @@
     {
       "id": "npc_gingerbread2_success",
       "speaker": "gingerbread",
-      "text": "I have heard that.... ",
+      "text": "I have heard that {fighterA} is going to inject certain subatance (flour) before the match with {fighterB}.  ",
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_gingerbread2_end" }
       ]
