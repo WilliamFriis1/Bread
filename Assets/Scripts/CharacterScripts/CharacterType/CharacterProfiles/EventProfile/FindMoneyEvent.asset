@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 787f226ec193620449ab94e314f787d6, type: 3}
   m_Name: FindMoneyEvent
   m_EditorClassIdentifier: 
-  kind: 0
-  moneyDelta: 0
-  infoMessage: 
+  kind: 1
+  moneyDelta: 100
+  infoMessage: You found 100 chips laying on the floor

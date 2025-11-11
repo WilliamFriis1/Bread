@@ -25,4 +25,4 @@ MonoBehaviour:
   isVendor: 0
   commodityId: 
   commodityPrice: 1
-  eventAsset: {fileID: 0}
+  eventAsset: {fileID: 11400000, guid: 1b6561a3ce291a6438b55ca8825ca229, type: 2}
