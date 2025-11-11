@@ -31,7 +31,7 @@
     {
       "id": "npc_gingerbread1_success",
       "speaker": "gingerbread",
-      "text": "Did you know that Le Croissant is.....",
+      "text": "Did you know that {fighterA} is a fraud because I have heard rumours that they getting expired and you can see some mold on their body. ",
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_gingerbread1_end" }
       ]

@@ -34,7 +34,7 @@
     {
       "id": "npc_referee_seek_success",
       "speaker": "referee",
-      "text": "Alright, I'm going to be real with you because what I'm about to say can only be betweeen us. ",
+      "text": "Alright, I'm going to be real with you because what I'm about to say can only be betweeen us. {fighterA} and {fighterB} are planning to rigg this fight because both are in need of chips for their...let's say certain addictive powder. ",
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_referee_end" }
       ]

@@ -34,9 +34,9 @@
     {
       "id": "npc_coach_seek_success",
       "speaker": "coach",
-      "text": "Alright, alright. I've been around long enough to know a thing or two. What do you want to know?",
+      "text": "Alright, alright. I've been around long enough to know a thing or two, so I'm only going to say this once. I have heard that {fighterB} used to be a troublemaker but I do not know the details so you going to have to look around for more information. ",
       "choices": [
-        { "id": "c1", "text": "Get the info and thank him", "gotoNode": "npc_coach_end" }
+        { "id": "c1", "text": "Thank you", "gotoNode": "npc_coach_end" }
       ]
     },
     {
