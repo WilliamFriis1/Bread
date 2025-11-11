@@ -23,7 +23,15 @@ public class EventRunner : MonoBehaviour
         switch (ev.kind)
         {
             case EventKind.MoneyDelta:
-                if (player != null) player.AddChips(ev.moneyDelta); // negative lowers money
+                if (player != null && ev.moneyDelta != 0)
+                {
+                    if (ev.moneyDelta > 0)
+                    {
+                        Debug.LogWarning($"[Event] Positive MoneyDelta {ev.moneyDelta} ignored (temp rule to avoid free money).");
+                        break;
+                    }
+                    player.AddChips(ev.moneyDelta); // negative values reduce chips
+                }
                 break;
 
             case EventKind.GiveFlour:

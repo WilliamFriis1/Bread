@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FindMoneyAdapter
   m_EditorClassIdentifier: 
   npcId: 
-  archetype: 0
+  archetype: 4
   dialogueFile: 
   displayName: 
   acceptBribes: 0

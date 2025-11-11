@@ -16,6 +16,8 @@ public class DialogueManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI npcText;
+    //event
+    public event System.Action DialogueEnded;
     // [SerializeField] private TextMeshProUGUI speakerText;
     // [SerializeField] private TextMeshProUGUI dialogueText;
     // [SerializeField] private GameObject choiceButtonPrefab;
@@ -244,13 +246,15 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
         currentNode = null;
 
-        //back to loop
-        var gm = GameManager.Instance;
-        if (gm != null)
-        {
-            gm.MoveToNextPhase();
-        }
+        // //back to loop
+        // var gm = GameManager.Instance;
+        // if (gm != null)
+        // {
+        //     gm.MoveToNextPhase();
+        // }
+        // owningNpc?.OnEnd?.Invoke();
         owningNpc?.OnEnd?.Invoke();
+        DialogueEnded?.Invoke();
     }
 
     //NEW added by el Gustaf

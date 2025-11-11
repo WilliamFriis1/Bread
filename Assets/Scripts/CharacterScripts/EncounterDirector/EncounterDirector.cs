@@ -6,6 +6,9 @@ public class EncounterDirector : MonoBehaviour
     [SerializeField] private CharacterSlot slot;
     [SerializeField] private Randomizer randomizer;
     [SerializeField] private EventRunner eventRunner;
+    [Header("Phase cap")]
+    [SerializeField] private int maxNpcsPerSpeaking = 3;
+    private int shownThisPhase = 0;
     // [ContextMenu("Print the NPC queue (preview)")]
     // public void PrintQueuePreview()
     // {
@@ -30,6 +33,10 @@ public class EncounterDirector : MonoBehaviour
     //     var names = arr.Select(Label);
     //     Debug.Log("[Randomizer] Today's NPC queue:\n - " + string.Join("\n - ", names));
     // }
+    public void BeginSpeakingPhase()
+    {
+        shownThisPhase = 0;
+    }
     public void StartNpcEncounter()
     {
         if (!slot || randomizer == null)
@@ -37,13 +44,18 @@ public class EncounterDirector : MonoBehaviour
             Debug.LogWarning("EncounterDirector: missing refs");
             return;
         }
+        if (shownThisPhase >= maxNpcsPerSpeaking)
+        {
+            GameManager.Instance.MoveToNextPhase();
+            return;
+        }
         var def = randomizer.GetNextNpc();
-
         if (def == null)
         {
             GameManager.Instance.MoveToNextPhase(); // SpeakingToNPC → RoundEnd
             return;
         }
+        shownThisPhase++;
         slot.Present(def); // idk man, you just get that shit working. 
     }
     public void FinishNpcAndEvent()
@@ -51,11 +63,27 @@ public class EncounterDirector : MonoBehaviour
         var ev = randomizer.GetRandomEvent();
         if (ev is EventNpcAdapter && eventRunner != null)
         {
-            // StartNpcEncounter();
             eventRunner.Execute(ev);
         }
+
+        // Try to fetch the next NPC of THIS phase (cap respected in StartNpcEncounter)
         StartNpcEncounter();
+
+
+        // var ev = randomizer.GetRandomEvent();
+        // if (ev is EventNpcAdapter && eventRunner != null)
+        // {
+        //     eventRunner.Execute(ev);
+        // }
+        // if (randomizer != null && randomizer.NpcOrder.Count > 0)
+        // {
+        //     StartNpcEncounter();
+        // }
+        // else
+        // {
+        //     GameManager.Instance.MoveToNextPhase();
+        // }
     }
-    public bool HasMoreNpcsToday() => randomizer && randomizer.NpcOrder.Count > 0;
+    // public bool HasMoreNpcsToday() => randomizer && randomizer.NpcOrder.Count > 0;
 
 }

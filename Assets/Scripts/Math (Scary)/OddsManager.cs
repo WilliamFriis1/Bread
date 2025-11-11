@@ -67,36 +67,45 @@ public class OddsManager : MonoBehaviour
     void Update()
     {
         currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
-        if (GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
-        {
-            selectFighterAButton.gameObject.SetActive(true);
-            selectFighterBButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            selectFighterAButton.gameObject.SetActive(false);
-            selectFighterBButton.gameObject.SetActive(false);
-        }
-        if (GameManager.Instance.Phase == GameManager.GamePhase.PlaceBet)
-        {
-            betInputField.gameObject.SetActive(true);
-        }
-        else
-        {
-            betInputField.gameObject.SetActive(false);
-        }
-        if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
-        {
-            fightButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            fightButton.gameObject.SetActive(false);
-        }
+
+        var phase = GameManager.Instance.Phase;
+
+        selectFighterAButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundStart);
+        selectFighterBButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundStart);
+        betInputField.gameObject.SetActive(phase == GameManager.GamePhase.PlaceBet);
+        fightButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundEnd);
+
+        // currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
+        // if (GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
+        // {
+        //     selectFighterAButton.gameObject.SetActive(true);
+        //     selectFighterBButton.gameObject.SetActive(true);
+        // }
+        // else
+        // {
+        //     selectFighterAButton.gameObject.SetActive(false);
+        //     selectFighterBButton.gameObject.SetActive(false);
+        // }
+        // if (GameManager.Instance.Phase == GameManager.GamePhase.PlaceBet)
+        // {
+        //     betInputField.gameObject.SetActive(true);
+        // }
+        // else
+        // {
+        //     betInputField.gameObject.SetActive(false);
+        // }
+        // if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
+        // {
+        //     fightButton.gameObject.SetActive(true);
+        // }
+        // else
+        // {
+        //     fightButton.gameObject.SetActive(false);
+        // }
     }
     public void OnRoundEnd()
     {
-        if (player.GetSelectedFighter().IsWinner())
+        if (player.GetSelectedFighter() != null && currentBet > 0 && player.GetSelectedFighter().IsWinner())
         {
             payout = (int)(currentBet * multiplier);
             player.AddChips(payout);
@@ -104,7 +113,7 @@ public class OddsManager : MonoBehaviour
         }
 
         ResetValues();
-        GameManager.Instance.MoveToNextPhase();
+        // GameManager.Instance.MoveToNextPhase();
     }
     void ResetValues()
     {
@@ -228,9 +237,17 @@ public class OddsManager : MonoBehaviour
 
     public void Fight()
     {
+        // Only allow during RoundEnd
+        if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd) return;
+
+        // 1) Make sure curtains are closed (in case they aren’t already)
+        var slot = FindFirstObjectByType<CharacterSlot>();
+        if (slot) slot.CloseCurtainsNow();
+        // 2) Simulate the fight
         SetMultiplier();
         CheckWinner();
-        GameManager.Instance.MoveToNextPhase();
+        // 3) Resolve round (payout/reset) and go to next day → RoundStart
+        GameManager.Instance.ResolveRoundAfterFight();
     }
 
     public void CheckWinner()

@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CanvasGroup m_gameScene;
     [SerializeField] private CanvasGroup m_winScene;
     [SerializeField] private CanvasGroup m_loseScene;
-    [SerializeField] private CanvasGroup m_pauseScene;
+    //[SerializeField] private CanvasGroup m_pauseScene;
     public enum GameDay
     {
         Day0, Day1, Day2, Day3
@@ -18,13 +18,12 @@ public class GameManager : MonoBehaviour
     {
         RoundStart, PlaceBet, SpeakingToNPC, RoundEnd
     }
-    [Header("References")]
     public Player Player { get; set; }
     public OddsManager OddsManager { get; set; }
     public GamePhase Phase;
     public GameDay Day;
-    //New added by gussy
-    public DayDirector dayDirector;
+    [Header("Refs")]
+    public DayDirector dayDirector;                 // builds the day's NPC queue
     public EncounterDirector encounterDirector;
 
     private static GameManager instance;
@@ -55,18 +54,19 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        nextGamePhase.onClick.AddListener(MoveToNextPhase);
+        if (nextGamePhase)
+        {
+            nextGamePhase.onClick.AddListener(MoveToNextPhase);
+        }
         m_winScene.blocksRaycasts = false;
         m_loseScene.blocksRaycasts = false;
 
-        //New made by Gustaf, shoutout poland (aka initial setup)
         Day = GameDay.Day0;
-        dayDirector.SetupDay(Day);
+        if (dayDirector)
+        {
+            dayDirector.SetupDay(Day);
+        }
         Phase = GamePhase.RoundStart;
-        // encounterDirector.StartNpcEncounter();
-
-
-        // Phase = GamePhase.SpeakingToNPC;
     }
 
     private void Awake()
@@ -90,26 +90,41 @@ public class GameManager : MonoBehaviour
     public void MoveToNextPhase()
     {
         Phase++;
-        if ((int)(Phase) > 3)
+        if ((int)Phase > 3)
         {
             Phase = 0;
             MoveToNextDay();
             return;
         }
-        Debug.Log(Phase.ToString());
-        // Start encounter only when we reach SpeakingToNPC
+
+        Debug.Log("[GM] Phase → " + Phase);
+
         if (Phase == GamePhase.SpeakingToNPC && encounterDirector != null)
         {
+            // reset per-speaking counters (if you have them) and start chain
+            encounterDirector.BeginSpeakingPhase();
             encounterDirector.StartNpcEncounter();
         }
+
         if (Phase == GamePhase.RoundEnd)
         {
-            OddsManager.Fight();
-            OddsManager.OnRoundEnd(); //pays out and shi
-            //After onroundend
-            Phase = GamePhase.RoundStart;
-            Debug.Log("[GM] Round resolved → back to RoundStart");
+            // Do NOT auto-fight here anymore. Just land in RoundEnd and wait for the Fight button.
+            // Curtains should already be closed after the last NPC via CharacterSlot -> EncounterDirector.
         }
+    }
+    // New: called by the Fight button (via OddsManager) AFTER simulating the fight
+    public void ResolveRoundAfterFight()
+    {
+        // Payout + reset round values
+        if (OddsManager != null)
+            OddsManager.OnRoundEnd();
+
+        // Go to next day (your design says a fight ends the day)
+        MoveToNextDay();
+
+        // Start the new day at RoundStart (don't auto-start NPCs)
+        Phase = GamePhase.RoundStart;
+        Debug.Log("[GM] Round resolved → next day, back to RoundStart");
     }
 
     public void MoveToNextDay()
@@ -117,14 +132,15 @@ public class GameManager : MonoBehaviour
         Day++;
         CheckWinCondition();
 
-        //new changes
-        dayDirector.SetupDay(Day);
-        // encounterDirector.StartNpcEncounter();
-        Phase = GamePhase.RoundStart;
         //if ((int)(Day) == 4)
         //{
         //    CheckWinCondition();
         //}
+        if (dayDirector)
+        {
+            dayDirector.SetupDay(Day);
+        }
+        // Phase = GamePhase.RoundStart;
     }
 
     public void CheckWinCondition()
@@ -153,12 +169,15 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator FadeToWin()
     {
-        m_gameScene.blocksRaycasts = false;
-        m_loseScene.blocksRaycasts = false;
-        m_fadeAnimator.FadeOut(m_gameScene, 2f);
+        // m_gameScene.blocksRaycasts = false;
+        // m_loseScene.blocksRaycasts = false;
+        // m_fadeAnimator.FadeOut(m_gameScene, 2f);
+        // yield return new WaitForSeconds(0.5f);
+        // m_fadeAnimator.FadeIn(m_winScene, 1f);
+        // m_winScene.blocksRaycasts = true;
+        if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
         yield return new WaitForSeconds(0.5f);
-        m_fadeAnimator.FadeIn(m_winScene, 1f);
-        m_winScene.blocksRaycasts = true;
+        if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
     }
     IEnumerator FadeToLose()
     {

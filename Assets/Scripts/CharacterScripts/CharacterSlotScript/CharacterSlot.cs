@@ -11,6 +11,8 @@ public class CharacterSlot : MonoBehaviour
     [Header("Stage")]
     [SerializeField] Transform characterRoot;
     [SerializeField] SpriteRenderer characterRenderer;
+    [Header("Refs")]
+    [SerializeField] private EncounterDirector encounterDirector;
 
     NpcDefinition activeDef;
     public void Present(NpcDefinition def, string startNodeId = "")
@@ -31,19 +33,33 @@ public class CharacterSlot : MonoBehaviour
         {
             yield return curtains.Open();
         }
-        //Kick that shit off (dialogue)
-        dialogueManager.LoadTreeFromFile(def.dialogueFile);
-        dialogueManager.SetNpc(def);
-        dialogueManager.SetOwningNpc(null);
+        if (dialogueManager != null)
+        {
+            dialogueManager.DialogueEnded -= OnDialogueEnded; // avoid double-subscribe
+            dialogueManager.DialogueEnded += OnDialogueEnded;
+            //Kick that shit off (dialogue)
+            dialogueManager.LoadTreeFromFile(def.dialogueFile);
+            dialogueManager.SetNpc(def);
+            dialogueManager.SetOwningNpc(null);
 
-        if (!string.IsNullOrWhiteSpace(nodeId))
-        {
-            dialogueManager.StartDialogueAt(nodeId);
+            if (!string.IsNullOrWhiteSpace(nodeId))
+            {
+                dialogueManager.StartDialogueAt(nodeId);
+            }
+            else
+            {
+                dialogueManager.StartFromTreeStart();
+            }
         }
-        else
+    }
+    private void OnDialogueEnded()
+    {
+        if (dialogueManager != null)
         {
-            dialogueManager.StartFromTreeStart();
+            dialogueManager.DialogueEnded -= OnDialogueEnded;
         }
+        CloseCurtainsNow();
+        encounterDirector?.FinishNpcAndEvent();
     }
     public void CloseCurtainsNow()
     {
