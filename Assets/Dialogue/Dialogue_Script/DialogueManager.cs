@@ -100,10 +100,19 @@ public class DialogueManager : MonoBehaviour
                     Debug.Log($"[Dialogue] Removed {node.reducedAmount} chips from player.");
                     break;
 
-                //case "add_chips":
-                //    GameManager.Instance.Player.AddChips(node.addedAmount);
-                //    Debug.Log($"[Dialogue] Added {node.addedAmount} chips to player.");
-                //    break;
+                case "buy_flour":
+                    {
+                        var player = GameManager.Instance.Player;
+                        // Prefer node.amount if present; else fall back to reducedAmount (back-compat)
+                        int price = (node.amount > 0) ? node.amount : Mathf.Max(0, node.reducedAmount);
+
+                        bool bought = player.TryBuyFlour(price); // sets hasFlour + updates visual
+                        if (bought)
+                            Debug.Log($"[Dialogue] Bought flour for {price} chips.");
+                        else
+                            Debug.Log("[Dialogue] Could not buy flour (already have it or insufficient chips).");
+                        break;
+                    }
 
                 default:
                     Debug.LogWarning($"[Dialogue] Unknown node action: {node.action}");
@@ -149,6 +158,7 @@ public class DialogueManager : MonoBehaviour
         {
             EndDialogue();
         }
+
         // if (node == null)
         // {
         //     Debug.LogError("Dialogue node not found!");

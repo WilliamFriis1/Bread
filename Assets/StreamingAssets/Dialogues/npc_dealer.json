@@ -32,7 +32,7 @@
       "id": "npc_dealer_buy_success",
       "speaker": "fortune cookie",
       "text": "Pleasure doin’ business. Don’t overdose on carbs, kid.",
-      "action": "remove_chips",
+      "action": "buy_flour",
       "amount": 20,
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_dealer_end" }

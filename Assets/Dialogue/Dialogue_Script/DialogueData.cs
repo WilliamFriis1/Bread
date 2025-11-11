@@ -27,7 +27,7 @@ public class DialogueNode
     public string text;
     public string action;
     public int reducedAmount = 20;
-    //public int addedAmount = 10;
+    public int amount = 0;
     public List<DialogueChoice> choices;
 }
 
