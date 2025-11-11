@@ -31,7 +31,7 @@
     {
       "id": "npc_gingerbread4_success",
       "speaker": "gingerbread",
-      "text": "Something big is going to happen at today's match. Here is the details... ",
+      "text": "Something big is going to happen at today's match. Better keep your eyes and ears open. ",
       "choices": [
         { "id": "c1", "text": "Leave", "gotoNode": "npc_gingerbread4_end" }
       ]
