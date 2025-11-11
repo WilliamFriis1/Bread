@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
 
         // Start the new day at RoundStart (don't auto-start NPCs)
         Phase = GamePhase.RoundStart;
-        Debug.Log("[GM] Round resolved → next day, back to RoundStart");
+        Debug.Log("[GM] Round resolved -> next day, back to RoundStart");
     }
 
     public void MoveToNextDay()
@@ -169,15 +169,15 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator FadeToWin()
     {
-        // m_gameScene.blocksRaycasts = false;
-        // m_loseScene.blocksRaycasts = false;
-        // m_fadeAnimator.FadeOut(m_gameScene, 2f);
-        // yield return new WaitForSeconds(0.5f);
-        // m_fadeAnimator.FadeIn(m_winScene, 1f);
-        // m_winScene.blocksRaycasts = true;
-        if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
+        m_gameScene.blocksRaycasts = false;
+        m_loseScene.blocksRaycasts = false;
+        m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
+        m_fadeAnimator.FadeIn(m_winScene, 1f);
+        m_winScene.blocksRaycasts = true;
+        // if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
+        // yield return new WaitForSeconds(0.5f);
+        // if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
     }
     IEnumerator FadeToLose()
     {
