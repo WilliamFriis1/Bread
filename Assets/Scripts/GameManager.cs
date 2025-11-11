@@ -106,11 +106,11 @@ public class GameManager : MonoBehaviour
             encounterDirector.StartNpcEncounter();
         }
 
-        if (Phase == GamePhase.RoundEnd)
-        {
-            // Do NOT auto-fight here anymore. Just land in RoundEnd and wait for the Fight button.
-            // Curtains should already be closed after the last NPC via CharacterSlot -> EncounterDirector.
-        }
+        // if (Phase == GamePhase.RoundEnd)
+        // {
+        //     // Do NOT auto-fight here anymore. Just land in RoundEnd and wait for the Fight button.
+        //     // Curtains should already be closed after the last NPC via CharacterSlot -> EncounterDirector.
+        // }
     }
     // New: called by the Fight button (via OddsManager) AFTER simulating the fight
     public void ResolveRoundAfterFight()
@@ -126,7 +126,6 @@ public class GameManager : MonoBehaviour
         Phase = GamePhase.RoundStart;
         Debug.Log("[GM] Round resolved -> next day, back to RoundStart");
     }
-
     public void MoveToNextDay()
     {
         Day++;
@@ -169,15 +168,15 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator FadeToWin()
     {
-        m_gameScene.blocksRaycasts = false;
-        m_loseScene.blocksRaycasts = false;
-        m_fadeAnimator.FadeOut(m_gameScene, 2f);
-        yield return new WaitForSeconds(0.5f);
-        m_fadeAnimator.FadeIn(m_winScene, 1f);
-        m_winScene.blocksRaycasts = true;
-        // if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
+        // m_gameScene.blocksRaycasts = false;
+        // m_loseScene.blocksRaycasts = false;
+        // m_fadeAnimator.FadeOut(m_gameScene, 2f);
         // yield return new WaitForSeconds(0.5f);
-        // if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
+        // m_fadeAnimator.FadeIn(m_winScene, 1f);
+        // m_winScene.blocksRaycasts = true;
+        if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
+        yield return new WaitForSeconds(0.5f);
+        if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
     }
     IEnumerator FadeToLose()
     {

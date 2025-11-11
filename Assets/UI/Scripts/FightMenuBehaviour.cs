@@ -91,8 +91,8 @@ public class FightMenuBehaviour : MonoBehaviour
         RectTransform fighterARect = m_fighterA.GetComponent<RectTransform>();
         RectTransform fighterBRect = m_fighterB.GetComponent<RectTransform>();
 
-        fighterARect.transform.localScale = new Vector3(1,1,1);
-        fighterBRect.transform.localScale = new Vector3(1,1,1);
+        fighterARect.transform.localScale = new Vector3(1, 1, 1);
+        fighterBRect.transform.localScale = new Vector3(1, 1, 1);
 
         fighterARect.transform.localScale *= scaleFactor;
         fighterBRect.transform.localScale *= scaleFactor;
@@ -131,7 +131,7 @@ public class FightMenuBehaviour : MonoBehaviour
         }
         m_lerpHelper.SetFinalPosition(m_parentObj, m_parentTargetPosition);
     }
-     
+
     IEnumerator StartFight(float startUpDuration, float durationToFightStart)
     {
         OnFightStarted?.Invoke(durationToFightStart, m_oddsManager.GetFighterA, m_oddsManager.GetFighterB);
