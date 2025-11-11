@@ -47,7 +47,7 @@ public class OddsManager : MonoBehaviour
         selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
         selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
 
-        betInputField.onEndEdit.AddListener(delegate {PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
+        betInputField.onEndEdit.AddListener(delegate { PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
         fightButton.onClick.AddListener(Fight);
         currentChipsText = currentChipsTextObj.GetComponent<TextMeshProUGUI>();
@@ -56,7 +56,7 @@ public class OddsManager : MonoBehaviour
     private void Awake()
     {
         fighterList = new List<Fighter>();
-        
+
         GameManager.Instance.OddsManager = this;
         player = GameManager.Instance.Player;
         InitFighterList();
@@ -67,7 +67,7 @@ public class OddsManager : MonoBehaviour
     void Update()
     {
         currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
-        if(GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
+        if (GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
         {
             selectFighterAButton.gameObject.SetActive(true);
             selectFighterBButton.gameObject.SetActive(true);
@@ -85,7 +85,7 @@ public class OddsManager : MonoBehaviour
         {
             betInputField.gameObject.SetActive(false);
         }
-        if(GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
+        if (GameManager.Instance.Phase == GameManager.GamePhase.SpeakingToNPC)
         {
             fightButton.gameObject.SetActive(true);
         }
@@ -143,7 +143,7 @@ public class OddsManager : MonoBehaviour
         SetMultiplier();
         Debug.Log(currentOdds);
     }
-    
+
     void SetMultiplier()
     {
         if (player.GetSelectedFighter() == null) return;
@@ -226,18 +226,18 @@ public class OddsManager : MonoBehaviour
     }
 
 
-    void Fight()
+    public void Fight()
     {
         SetMultiplier();
         CheckWinner();
         GameManager.Instance.MoveToNextPhase();
     }
 
-    void CheckWinner()
+    public void CheckWinner()
     {
         float winningNumber = rand.Next(0, 100);
 
-        if (winningNumber/100 < currentOdds)
+        if (winningNumber / 100 < currentOdds)
         {
             FighterA.SetAsWinner();
         }
@@ -252,7 +252,7 @@ public class OddsManager : MonoBehaviour
         return player.GetChips() >= targetChips;
     }
 
-    
+
 
 
 }

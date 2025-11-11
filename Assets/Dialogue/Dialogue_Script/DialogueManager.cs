@@ -55,11 +55,11 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("No dialogue tree loaded!");
             return;
         }
-        var gm = GameManager.Instance;
-        if (gm != null)
-        {
-            gm.Phase = GameManager.GamePhase.SpeakingToNPC;
-        }
+        // var gm = GameManager.Instance;
+        // if (gm != null)
+        // {
+        //     gm.Phase = GameManager.GamePhase.SpeakingToNPC;
+        // }
         dialoguePanel.SetActive(true);
         ShowNode(currentTree.GetNode(nodeId));
     }

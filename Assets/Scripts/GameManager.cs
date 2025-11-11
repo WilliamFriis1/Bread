@@ -7,9 +7,9 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Button nextGamePhase;
     [SerializeField] private CanvasGroup m_gameScene;
-    // [SerializeField] private CanvasGroup m_winScene;
-    // [SerializeField] private CanvasGroup m_loseScene;
-    // [SerializeField] private CanvasGroup m_pauseScene;
+    [SerializeField] private CanvasGroup m_winScene;
+    [SerializeField] private CanvasGroup m_loseScene;
+    [SerializeField] private CanvasGroup m_pauseScene;
     public enum GameDay
     {
         Day0, Day1, Day2, Day3
@@ -56,8 +56,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         nextGamePhase.onClick.AddListener(MoveToNextPhase);
-        // m_winScene.blocksRaycasts = false;
-        // m_loseScene.blocksRaycasts = false;
+        m_winScene.blocksRaycasts = false;
+        m_loseScene.blocksRaycasts = false;
 
         //New made by Gustaf, shoutout poland (aka initial setup)
         Day = GameDay.Day0;
@@ -82,8 +82,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         m_fadeAnimator = GetComponent<FadeAnimator>();
-        // m_winScene.alpha = 0.0f;
-        // m_loseScene.alpha = 0.0f;
+        m_winScene.alpha = 0.0f;
+        m_loseScene.alpha = 0.0f;
         m_gameScene.alpha = 1.0f;
     }
 
@@ -98,9 +98,17 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log(Phase.ToString());
         // Start encounter only when we reach SpeakingToNPC
-        if (Phase == GamePhase.SpeakingToNPC)
+        if (Phase == GamePhase.SpeakingToNPC && encounterDirector != null)
         {
             encounterDirector.StartNpcEncounter();
+        }
+        if (Phase == GamePhase.RoundEnd)
+        {
+            OddsManager.Fight();
+            OddsManager.OnRoundEnd(); //pays out and shi
+            //After onroundend
+            Phase = GamePhase.RoundStart;
+            Debug.Log("[GM] Round resolved → back to RoundStart");
         }
     }
 
@@ -111,8 +119,8 @@ public class GameManager : MonoBehaviour
 
         //new changes
         dayDirector.SetupDay(Day);
-        encounterDirector.StartNpcEncounter();
-
+        // encounterDirector.StartNpcEncounter();
+        Phase = GamePhase.RoundStart;
         //if ((int)(Day) == 4)
         //{
         //    CheckWinCondition();
@@ -146,19 +154,19 @@ public class GameManager : MonoBehaviour
     IEnumerator FadeToWin()
     {
         m_gameScene.blocksRaycasts = false;
-        // m_loseScene.blocksRaycasts = false;
+        m_loseScene.blocksRaycasts = false;
         m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        // m_fadeAnimator.FadeIn(m_winScene, 1f);
-        // m_winScene.blocksRaycasts = true;
+        m_fadeAnimator.FadeIn(m_winScene, 1f);
+        m_winScene.blocksRaycasts = true;
     }
     IEnumerator FadeToLose()
     {
         m_gameScene.blocksRaycasts = false;
-        // m_winScene.blocksRaycasts = false;
+        m_winScene.blocksRaycasts = false;
         m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        // m_fadeAnimator.FadeIn(m_loseScene, 1f);
-        // m_loseScene.blocksRaycasts = true;
+        m_fadeAnimator.FadeIn(m_loseScene, 1f);
+        m_loseScene.blocksRaycasts = true;
     }
 }
