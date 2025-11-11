@@ -28,6 +28,12 @@ public class GameManager : MonoBehaviour
 
     private static GameManager instance;
     private FadeAnimator m_fadeAnimator;
+    //Helpers
+    private bool gameOver = false;
+    private const GameDay LAST_DAY = GameDay.Day3;
+
+    private bool IsLastDay => Day == LAST_DAY;
+
     public static GameManager Instance
     {
         get
@@ -89,6 +95,10 @@ public class GameManager : MonoBehaviour
 
     public void MoveToNextPhase()
     {
+        if (gameOver)
+        {
+            return;
+        }
         Phase++;
         if ((int)Phase > 3)
         {
@@ -119,17 +129,32 @@ public class GameManager : MonoBehaviour
         if (OddsManager != null)
             OddsManager.OnRoundEnd();
 
-        // Go to next day (your design says a fight ends the day)
-        MoveToNextDay();
+        if (IsLastDay)
+        {
+            EndTournament();
+            return;
+        }
+        // // Go to next day (your design says a fight ends the day)
+        // MoveToNextDay();
 
         // Start the new day at RoundStart (don't auto-start NPCs)
+        MoveToNextDay();
         Phase = GamePhase.RoundStart;
         Debug.Log("[GM] Round resolved -> next day, back to RoundStart");
     }
     public void MoveToNextDay()
     {
+        if (gameOver)
+        {
+            return;
+        }
+        if (IsLastDay)
+        {
+            EndTournament();
+            return;
+        }
         Day++;
-        CheckWinCondition();
+        // CheckWinCondition();
 
         //if ((int)(Day) == 4)
         //{
@@ -140,6 +165,36 @@ public class GameManager : MonoBehaviour
             dayDirector.SetupDay(Day);
         }
         // Phase = GamePhase.RoundStart;
+    }
+    private void EndTournament()
+    {
+        if (gameOver)
+        {
+            return;
+        }
+        gameOver = true;
+
+        if (nextGamePhase)
+        {
+            nextGamePhase.interactable = false;
+        }
+        if (m_gameScene) m_gameScene.blocksRaycasts = false; // optional extra freeze
+        //decide outcome
+        if (OddsManager != null && OddsManager.CheckIfPlayerWon())
+        {
+            Win();
+        }
+        else if (Player != null && Player.GetChips() <= 0)
+        {
+            Lose();
+        }
+        else
+        {
+            //Fallback
+            Lose();
+        }
+
+        Debug.Log("[GM] Tournament ended.");
     }
 
     public void CheckWinCondition()
@@ -168,23 +223,46 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator FadeToWin()
     {
-        // m_gameScene.blocksRaycasts = false;
-        // m_loseScene.blocksRaycasts = false;
-        // m_fadeAnimator.FadeOut(m_gameScene, 2f);
-        // yield return new WaitForSeconds(0.5f);
-        // m_fadeAnimator.FadeIn(m_winScene, 1f);
-        // m_winScene.blocksRaycasts = true;
-        if (m_gameScene && m_fadeAnimator) { m_gameScene.blocksRaycasts = false; m_fadeAnimator.FadeOut(m_gameScene, 2f); }
+        // HideTransientOverlays();
+        m_gameScene.blocksRaycasts = false;
+        m_loseScene.blocksRaycasts = false;
+        m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
-        if (m_winScene && m_fadeAnimator) { m_fadeAnimator.FadeIn(m_winScene, 1f); m_winScene.blocksRaycasts = true; }
+        // BringToFront(m_winScene);
+        m_fadeAnimator.FadeIn(m_winScene, 1f);
+        m_winScene.blocksRaycasts = true;
+        // m_winScene.interactable = true;
     }
     IEnumerator FadeToLose()
     {
+        // HideTransientOverlays();
         m_gameScene.blocksRaycasts = false;
         m_winScene.blocksRaycasts = false;
         m_fadeAnimator.FadeOut(m_gameScene, 2f);
         yield return new WaitForSeconds(0.5f);
+        // BringToFront(m_loseScene);
         m_fadeAnimator.FadeIn(m_loseScene, 1f);
         m_loseScene.blocksRaycasts = true;
+        // m_loseScene.interactable = true;
+
     }
+    // private void HideTransientOverlays()
+    // {
+    //     // Fight menu overlay
+    //     var fight = FindFirstObjectByType<FightMenuBehaviour>();
+    //     if (fight != null)
+    //     {
+    //         // Safest: use its own reset so positions/alpha get restored
+    //         fight.ResetFightMenu();
+
+    //         // If you also have direct access to its overlay CanvasGroup, ensure:
+    //         // overlayGroup.alpha = 0f; overlayGroup.blocksRaycasts = false; overlayGroup.interactable = false;
+    //     }
+
+    //     // If you have any other modal canvases, disable their raycasts here too.
+    // }
+    // private void BringToFront(CanvasGroup cg)
+    // {
+    //     if (cg != null) cg.transform.SetAsLastSibling();
+    // }
 }

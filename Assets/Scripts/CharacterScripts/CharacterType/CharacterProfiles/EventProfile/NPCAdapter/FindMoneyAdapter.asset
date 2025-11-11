@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcId: 
   archetype: 4
-  dialogueFile: 
+  dialogueFile: random_chips_event.json
   displayName: 
   acceptBribes: 0
   prefferedBribeItemId: 
