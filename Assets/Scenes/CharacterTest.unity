@@ -443,6 +443,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NextPhase
       objectReference: {fileID: 0}
+    - target: {fileID: 3841126652833679099, guid: 97cf2e978ebe276448e3695abed80dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4871967950451033967, guid: 97cf2e978ebe276448e3695abed80dd2,
         type: 3}
       propertyPath: m_Pivot.x
