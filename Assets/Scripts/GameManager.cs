@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public DayDirector dayDirector;                 // builds the day's NPC queue
     public EncounterDirector encounterDirector;
 
-    private static GameManager instance;
+    public static GameManager instance;
     private FadeAnimator m_fadeAnimator;
     //Helpers
     private bool gameOver = false;
@@ -127,7 +127,14 @@ public class GameManager : MonoBehaviour
     {
         // Payout + reset round values
         if (OddsManager != null)
+        {
             OddsManager.OnRoundEnd();
+        }
+        if (Player != null && Player.GetChips() <= 0)
+        {
+            EndTournament(forcedLose: true);
+            return;
+        }
 
         if (IsLastDay)
         {
@@ -155,7 +162,6 @@ public class GameManager : MonoBehaviour
         }
         Day++;
         // CheckWinCondition();
-
         //if ((int)(Day) == 4)
         //{
         //    CheckWinCondition();
@@ -166,7 +172,7 @@ public class GameManager : MonoBehaviour
         }
         // Phase = GamePhase.RoundStart;
     }
-    private void EndTournament()
+    private void EndTournament(bool forcedLose = false)
     {
         if (gameOver)
         {
@@ -180,6 +186,10 @@ public class GameManager : MonoBehaviour
         }
         if (m_gameScene) m_gameScene.blocksRaycasts = false; // optional extra freeze
         //decide outcome
+        if (forcedLose)
+        {
+            Lose();
+        }
         if (OddsManager != null && OddsManager.CheckIfPlayerWon())
         {
             Win();

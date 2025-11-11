@@ -1,5 +1,4 @@
-using Ink.Runtime;
-using UnityEditor.ShaderGraph.Serialization;
+
 using UnityEngine;
 
 public enum NpcArchetype { Coach, Referee, Dealer, Gingerbread, Event }

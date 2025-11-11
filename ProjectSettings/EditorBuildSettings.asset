@@ -35,8 +35,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 14e0b3d853fc8624da14b4dd086ae73e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScene.unity
     guid: d633553563c61c34b936457bcf911209
+  - enabled: 1
+    path: Assets/Scenes/CharacterTest.unity
+    guid: 8784e86c9c08a0f45a9484bc6d893958
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

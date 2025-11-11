@@ -1,11 +1,11 @@
-using BTAI;
-using Unity.Mathematics;
+// using BTAI;
+
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    Fighter selectedFighter;
-    int chips = 100;
+    public Fighter selectedFighter;
+    private int chips = 100;
     private bool hasFlour = false;
     [SerializeField] private GameObject flourObject;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 public class Fighter
 {
     public string Name { get; set; }
-    bool hasWon;
+    private bool hasWon;
 
     public Fighter(string name)
     {

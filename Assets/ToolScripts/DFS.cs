@@ -1,6 +1,6 @@
 //Author: William Friis
-using System.Runtime.InteropServices.WindowsRuntime;
-using TreeEditor;
+// using System.Runtime.InteropServices.WindowsRuntime;
+// using TreeEditor;
 using UnityEngine;
 
 #nullable enable
@@ -15,7 +15,7 @@ public class DFS : MonoBehaviour
 {
     public uint Iterations;
     public string Goal;
-    
+
     private TestNode treeRoot;
     private void Start()
     {
@@ -78,10 +78,10 @@ public class DFS : MonoBehaviour
 
     public void Reset(TestNode root, bool isTreeRoot)
     {
-        if(!isTreeRoot)
+        if (!isTreeRoot)
             root.Visited = false;
 
-        for(int i = 0; i < root.Children.Length; i++)
+        for (int i = 0; i < root.Children.Length; i++)
         {
             if (root.Children[i] != null)
                 Reset(root.Children[i], false);
