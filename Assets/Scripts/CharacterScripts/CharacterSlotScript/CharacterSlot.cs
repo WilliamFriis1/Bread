@@ -17,48 +17,42 @@ public class CharacterSlot : MonoBehaviour
     NpcDefinition activeDef;
     public void Present(NpcDefinition def, string startNodeId = "")
     {
+        Debug.Log($"[Slot#{GetInstanceID()}] Present {def?.displayName ?? def?.name}");
         StartCoroutine(DoPresent(def, startNodeId));
     }
     IEnumerator DoPresent(NpcDefinition def, string nodeId)
     {
-        if (curtains) yield return curtains.Close();
-
         activeDef = def;
         if (characterRenderer)
         {
             characterRenderer.sprite = def.characterSprite;
             characterRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         }
-        if (curtains)
-        {
-            yield return curtains.Open();
-        }
+
+        if (curtains) yield return curtains.Open();
+
         if (dialogueManager != null)
         {
-            dialogueManager.DialogueEnded -= OnDialogueEnded; // avoid double-subscribe
+            dialogueManager.DialogueEnded -= OnDialogueEnded;
             dialogueManager.DialogueEnded += OnDialogueEnded;
-            //Kick that shit off (dialogue)
+
             dialogueManager.LoadTreeFromFile(def.dialogueFile);
             dialogueManager.SetNpc(def);
             dialogueManager.SetOwningNpc(null);
 
             if (!string.IsNullOrWhiteSpace(nodeId))
-            {
                 dialogueManager.StartDialogueAt(nodeId);
-            }
             else
-            {
                 dialogueManager.StartFromTreeStart();
-            }
         }
     }
     private void OnDialogueEnded()
     {
+        Debug.Log($"[Slot#{GetInstanceID()}] DialogueEnded()");
         if (dialogueManager != null)
-        {
             dialogueManager.DialogueEnded -= OnDialogueEnded;
-        }
-        CloseCurtainsNow();
+
+        // DO NOT close here; EncounterDirector decides when to end the speaking phase.
         encounterDirector?.FinishNpcAndEvent();
     }
     public void CloseCurtainsNow()
@@ -66,6 +60,14 @@ public class CharacterSlot : MonoBehaviour
         if (gameObject.activeInHierarchy && curtains)
         {
             StartCoroutine(curtains.Close());
+        }
+    }
+    public IEnumerator CloseCurtainsAndWait()
+    {
+        if (gameObject.activeInHierarchy && curtains)
+        {
+            // Allow end-of-speaking to close even while Phase is SpeakingToNPC.
+            yield return curtains.Close();
         }
     }
 }

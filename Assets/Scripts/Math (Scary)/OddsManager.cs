@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
@@ -22,6 +23,9 @@ public class OddsManager : MonoBehaviour
     public Fighter GetFighterA { get { return FighterA; } }
     public Fighter GetFighterB { get { return FighterB; } }
 
+    //Bool for resolving the fights
+    bool isResolving = false;
+
     float currentOdds = 0.5f;
     float minimumOdds = 0.25f;
     float maximumOdds = 0.75f;
@@ -39,6 +43,7 @@ public class OddsManager : MonoBehaviour
     [SerializeField] Button fightButton;
     [SerializeField] Button selectFighterAButton;
     [SerializeField] Button selectFighterBButton;
+    [SerializeField] private CharacterSlot stageSlot;
     private TextMeshProUGUI currentChipsText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -237,17 +242,30 @@ public class OddsManager : MonoBehaviour
 
     public void Fight()
     {
-        // Only allow during RoundEnd
-        if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd) return;
+        if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd || isResolving) return;
+        StartCoroutine(FightSequence());
+        // // Only allow during RoundEnd
+        // if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd) return;
 
-        // 1) Make sure curtains are closed (in case they aren’t already)
-        var slot = FindFirstObjectByType<CharacterSlot>();
-        if (slot) slot.CloseCurtainsNow();
-        // 2) Simulate the fight
+        // // 1) Make sure curtains are closed (in case they aren’t already)
+        // var slot = FindFirstObjectByType<CharacterSlot>();
+        // if (slot) slot.CloseCurtainsNow();
+        // // 2) Simulate the fight
+        // SetMultiplier();
+        // CheckWinner();
+        // // 3) Resolve round (payout/reset) and go to next day → RoundStart
+        // GameManager.Instance.ResolveRoundAfterFight();
+    }
+    private IEnumerator FightSequence()
+    {
+        isResolving = true;
+        yield return null;
         SetMultiplier();
         CheckWinner();
-        // 3) Resolve round (payout/reset) and go to next day → RoundStart
+
         GameManager.Instance.ResolveRoundAfterFight();
+        isResolving = false;
+        // yield break;
     }
 
     public void CheckWinner()

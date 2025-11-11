@@ -5161,7 +5161,7 @@ PrefabInstance:
     - target: {fileID: 1555615836691209739, guid: 0be9f19cece4fbe43869f04134120684,
         type: 3}
       propertyPath: RandomEvents.Array.data[0].Odds
-      value: 0.15
+      value: 0.075
       objectReference: {fileID: 0}
     - target: {fileID: 2522387995344989629, guid: 0be9f19cece4fbe43869f04134120684,
         type: 3}
@@ -5318,6 +5318,11 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 373650820}
+    - target: {fileID: 7411899298288127599, guid: 0be9f19cece4fbe43869f04134120684,
+        type: 3}
+      propertyPath: stageSlot
+      value: 
+      objectReference: {fileID: 74363870}
     - target: {fileID: 7411899298288127599, guid: 0be9f19cece4fbe43869f04134120684,
         type: 3}
       propertyPath: fightButton
