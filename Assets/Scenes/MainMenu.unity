@@ -282,8 +282,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_defaultTexture: {fileID: 2800000, guid: 7df831e52caa051498816680191f0d3b, type: 3}
-  m_clickableObjectTexture: {fileID: 2800000, guid: 150a47bdd6467884d9f63b44766704fe,
+  m_clickableObjectTexture: {fileID: 2800000, guid: 1959f815197aaa04eaa41d30959a58b2,
     type: 3}
+  m_npcObjectTexture: {fileID: 2800000, guid: b4c42a0690d6624428f3cf174de08e61, type: 3}
 --- !u!4 &566276286
 Transform:
   m_ObjectHideFlags: 0

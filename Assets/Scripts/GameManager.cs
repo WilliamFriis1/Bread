@@ -2,13 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Button nextGamePhase;
     [SerializeField] private CanvasGroup m_gameScene;
     [SerializeField] private CanvasGroup m_winScene;
     [SerializeField] private CanvasGroup m_loseScene;
+    [SerializeField] private TextMeshProUGUI m_dayText;
+    [SerializeField] private TextMeshProUGUI m_debtText;
     //[SerializeField] private CanvasGroup m_pauseScene;
     public enum GameDay
     {
@@ -16,7 +18,7 @@ public class GameManager : MonoBehaviour
     }
     public enum GamePhase
     {
-        RoundStart, PlaceBet, SpeakingToNPC, RoundEnd
+        RoundStart, PlaceBet, SpeakingToNPC, Fight, RoundEnd
     }
     public Player Player { get; set; }
     public OddsManager OddsManager { get; set; }
@@ -60,10 +62,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        if (nextGamePhase)
-        {
-            nextGamePhase.onClick.AddListener(MoveToNextPhase);
-        }
         m_winScene.blocksRaycasts = false;
         m_loseScene.blocksRaycasts = false;
 
@@ -73,6 +71,8 @@ public class GameManager : MonoBehaviour
             dayDirector.SetupDay(Day);
         }
         Phase = GamePhase.RoundStart;
+        m_dayText.text = $"Day: {(int)Day}";
+        m_debtText.text = $"Debt: {OddsManager.GetTargetChips}";
     }
 
     private void Awake()
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         Phase++;
-        if ((int)Phase > 3)
+        if ((int)Phase == 4)
         {
             Phase = 0;
             MoveToNextDay();
@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
         // MoveToNextDay();
 
         // Start the new day at RoundStart (don't auto-start NPCs)
-        MoveToNextDay();
+        //MoveToNextDay();
         Phase = GamePhase.RoundStart;
         Debug.Log("[GM] Round resolved -> next day, back to RoundStart");
     }
@@ -164,6 +164,7 @@ public class GameManager : MonoBehaviour
         {
             dayDirector.SetupDay(Day);
         }
+        m_dayText.text = $"Day: {(int)Day}";
         // Phase = GamePhase.RoundStart;
     }
     private void EndTournament()
@@ -173,11 +174,6 @@ public class GameManager : MonoBehaviour
             return;
         }
         gameOver = true;
-
-        if (nextGamePhase)
-        {
-            nextGamePhase.interactable = false;
-        }
         if (m_gameScene) m_gameScene.blocksRaycasts = false; // optional extra freeze
         //decide outcome
         if (OddsManager != null && OddsManager.CheckIfPlayerWon())

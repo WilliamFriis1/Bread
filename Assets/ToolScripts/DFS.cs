@@ -1,6 +1,4 @@
 //Author: William Friis
-using System.Runtime.InteropServices.WindowsRuntime;
-using TreeEditor;
 using UnityEngine;
 
 #nullable enable

@@ -1,10 +1,7 @@
-using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class NpcRandomizerTest : MonoBehaviour
