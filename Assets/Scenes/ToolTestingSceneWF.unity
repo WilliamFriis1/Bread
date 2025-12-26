@@ -211,6 +211,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &265702332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 265702334}
+  - component: {fileID: 265702333}
+  m_Layer: 0
+  m_Name: DialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &265702333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265702332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e8e206d95001984b8183b11a7601102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialoguePanel: {fileID: 0}
+  npcText: {fileID: 0}
+  choiceSlots:
+  - root: {fileID: 0}
+    button: {fileID: 0}
+    label: {fileID: 0}
+  - root: {fileID: 0}
+    button: {fileID: 0}
+    label: {fileID: 0}
+  - root: {fileID: 0}
+    button: {fileID: 0}
+    label: {fileID: 0}
+  - root: {fileID: 0}
+    button: {fileID: 0}
+    label: {fileID: 0}
+  npc: {fileID: 0}
+--- !u!4 &265702334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265702332}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 595.1835, y: 524.5214, z: -0.13501814}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &981131970
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +302,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Iterations: 5
   Goal: 'Node level: 4'
+  Npcs:
+  - {fileID: 11400000, guid: d9d9c66e63b33cf4a842f549a3904d8a, type: 2}
+  - {fileID: 11400000, guid: 88612f53513de4b41ba654d4fc302753, type: 2}
+  - {fileID: 11400000, guid: d62d0cac495a7aa41a5b473a0af3197a, type: 2}
+  - {fileID: 11400000, guid: d11772c7e9c1a884b91175a154f29ad4, type: 2}
+  - {fileID: 11400000, guid: a286c372587b5c24a8dc03641b7556bd, type: 2}
+  - {fileID: 11400000, guid: 011949b6eef6bf54cbe70d6c89612bdd, type: 2}
+  - {fileID: 11400000, guid: 75362233149c15744bb9dc216b3091a6, type: 2}
+  DialogueManager: {fileID: 265702333}
 --- !u!4 &981131972
 Transform:
   m_ObjectHideFlags: 0
@@ -263,3 +332,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 5352594}
   - {fileID: 981131972}
+  - {fileID: 265702334}
