@@ -47,7 +47,7 @@ public class CursorController : MonoBehaviour
                 Cursor.SetCursor(m_clickableObjectTexture, m_clickPosition, CursorMode.Auto);
                 break;
             case CursorState.NPC:
-                Cursor.SetCursor(m_defaultTexture, m_clickPosition, CursorMode.Auto);
+                Cursor.SetCursor(m_npcObjectTexture, m_clickPosition, CursorMode.Auto);
                 break;
             default:
                 Cursor.SetCursor(m_defaultTexture, m_clickPosition, CursorMode.Auto);

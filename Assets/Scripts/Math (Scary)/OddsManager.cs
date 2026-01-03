@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +20,7 @@ public class OddsManager : MonoBehaviour
     Fighter FighterB;
     public Fighter GetFighterA { get { return FighterA; } }
     public Fighter GetFighterB { get { return FighterB; } }
+    public string FightResult;
 
     //Bool for resolving the fights
     bool isResolving = false;
@@ -34,6 +34,7 @@ public class OddsManager : MonoBehaviour
     float multiplier = 1f;
 
     int targetChips = 110;
+    public int GetTargetChips { get { return targetChips; } }
 
     System.Random rand = new System.Random();
 
@@ -48,13 +49,14 @@ public class OddsManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
-        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
 
         betInputField.onEndEdit.AddListener(delegate { PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
         fightButton.onClick.AddListener(Fight);
         currentChipsText = currentChipsTextObj.GetComponent<TextMeshProUGUI>();
+        FightResult = "";
     }
 
     private void Awake()
@@ -77,7 +79,7 @@ public class OddsManager : MonoBehaviour
         selectFighterAButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundStart);
         selectFighterBButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundStart);
         betInputField.gameObject.SetActive(phase == GameManager.GamePhase.PlaceBet);
-        fightButton.gameObject.SetActive(phase == GameManager.GamePhase.RoundEnd);
+        fightButton.gameObject.SetActive(phase == GameManager.GamePhase.Fight);
 
         // currentChipsText.text = GameManager.Instance.Player.GetChips().ToString();
         // if (GameManager.Instance.Phase == GameManager.GamePhase.RoundStart)
@@ -112,11 +114,16 @@ public class OddsManager : MonoBehaviour
         if (player.GetSelectedFighter() != null && currentBet > 0 && player.GetSelectedFighter().IsWinner())
         {
             payout = (int)(currentBet * multiplier);
-            player.AddChips(payout);
+            player.AddChips(payout * 2);
             Debug.Log("Player won " + payout + " chips!");
+            FightResult = $"Congratulations you won {payout} chips!";
+        }
+        else
+        {
+            FightResult = $"Your fighter lost! You lose {currentBet} chips! Unfortunate!";
         }
 
-        ResetValues();
+            ResetValues();
         // GameManager.Instance.MoveToNextPhase();
     }
     void ResetValues()
@@ -174,7 +181,7 @@ public class OddsManager : MonoBehaviour
     void PlayerMakesBet(int playerBet)
     {
         //Probably should clamp playerBet to be less than player chips. Skips the if statement.
-        if (playerBet <= player.GetChips())
+        if (playerBet != 0)
         {
             currentBet = playerBet;
             player.RemoveChips(playerBet);
@@ -241,7 +248,7 @@ public class OddsManager : MonoBehaviour
 
     public void Fight()
     {
-        if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd || isResolving) return;
+        if (GameManager.Instance.Phase != GameManager.GamePhase.Fight || isResolving) return;
         StartCoroutine(FightSequence());
         // // Only allow during RoundEnd
         // if (GameManager.Instance.Phase != GameManager.GamePhase.RoundEnd) return;
@@ -258,7 +265,7 @@ public class OddsManager : MonoBehaviour
     private IEnumerator FightSequence()
     {
         isResolving = true;
-        yield return null;
+        yield return new WaitForSeconds(10f);
         SetMultiplier();
         CheckWinner();
 

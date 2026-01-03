@@ -1,11 +1,9 @@
-// using BTAI;
-
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Fighter selectedFighter;
-    private int chips = 100;
+    Fighter selectedFighter;
+    int chips = 100;
     private bool hasFlour = false;
     [SerializeField] private GameObject flourObject;
 
