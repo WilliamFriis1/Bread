@@ -178,11 +178,11 @@ public class GameManager : MonoBehaviour
         //decide outcome
         if (OddsManager != null && OddsManager.CheckIfPlayerWon())
         {
-            Win();
-        }
-        else if (Player != null && Player.GetChips() <= 0)
-        {
             Lose();
+        }
+        else if (Player != null && Player.GetChips() < 0)
+        {
+            Win();
         }
         else
         {

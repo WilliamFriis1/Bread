@@ -42,7 +42,10 @@ public class MainMenuBehaviour : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("CharacterTest");
+        if (Random.Range(0, 10) == 0)
+        {
+            SceneManager.LoadScene("CharacterTest");
+        }
     }
 
     public void QuitGame()

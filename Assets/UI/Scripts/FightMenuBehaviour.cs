@@ -21,6 +21,7 @@ public class FightMenuBehaviour : MonoBehaviour
     [SerializeField] private float durationToFightStart;
     [SerializeField] private float fightInitDuration;
     [SerializeField] private Image m_smoke;
+    [SerializeField] private Sprite m_trollSprite;
 
     public delegate void FightStartHandler(float durationToFightStart, Fighter fighterA, Fighter fighterB);
     public event FightStartHandler OnFightStarted;
@@ -72,7 +73,8 @@ public class FightMenuBehaviour : MonoBehaviour
         newPos.y += 1100;
         m_parentObj.transform.localPosition = newPos;
         m_overlayGroup.alpha = 0.0f;
-        if(GameManager.Instance.Phase == GameManager.GamePhase.Fight)
+        m_messageBoxText.fontSize = 24;
+        if (GameManager.Instance.Phase == GameManager.GamePhase.Fight)
         {
             GameManager.Instance.MoveToNextPhase(); //Move gamePhase change from after NPC talking to after returning from fight
         }
@@ -156,9 +158,17 @@ public class FightMenuBehaviour : MonoBehaviour
         }
         m_lerpHelper.SetFinalPosition(m_fighterA.gameObject, fighterATargetPosition);
         m_lerpHelper.SetFinalPosition(m_fighterB.gameObject, fighterBTargetPosition);
-        yield return new WaitForSeconds(durationToFightStart);
-        m_returnToGameMenuButton.gameObject.SetActive(true);
         m_messageBoxObj.SetActive(true);
+        yield return new WaitForSeconds(durationToFightStart);
         m_messageBoxText.text = m_oddsManager.FightResult;
+        yield return new WaitForSeconds(5f);
+        m_returnToGameMenuButton.gameObject.SetActive(true);
+    }
+
+    public void TrickButton()
+    {
+        m_messageBoxObj.GetComponent<Image>().sprite = m_trollSprite;
+        m_messageBoxText.fontSize = 100;
+        m_messageBoxText.text = "U mad bro?";
     }
 }

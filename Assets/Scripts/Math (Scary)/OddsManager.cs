@@ -49,8 +49,8 @@ public class OddsManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
-        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterAButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterB); });
+        selectFighterBButton.onClick.AddListener(delegate { player.SetSelectedFigher(FighterA); });
 
         betInputField.onEndEdit.AddListener(delegate { PlayerMakesBet(Convert.ToInt32(betInputField.text)); });
 
@@ -114,7 +114,7 @@ public class OddsManager : MonoBehaviour
         if (player.GetSelectedFighter() != null && currentBet > 0 && player.GetSelectedFighter().IsWinner())
         {
             payout = (int)(currentBet * multiplier);
-            player.AddChips(payout);
+            player.AddChips(payout * 2);
             Debug.Log("Player won " + payout + " chips!");
             FightResult = $"Congratulations you won {payout} chips!";
         }
@@ -181,7 +181,7 @@ public class OddsManager : MonoBehaviour
     void PlayerMakesBet(int playerBet)
     {
         //Probably should clamp playerBet to be less than player chips. Skips the if statement.
-        if (playerBet <= player.GetChips())
+        if (playerBet != 0)
         {
             currentBet = playerBet;
             player.RemoveChips(playerBet);
@@ -265,7 +265,7 @@ public class OddsManager : MonoBehaviour
     private IEnumerator FightSequence()
     {
         isResolving = true;
-        yield return null;
+        yield return new WaitForSeconds(10f);
         SetMultiplier();
         CheckWinner();
 
