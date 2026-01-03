@@ -168,7 +168,7 @@ public class FightMenuBehaviour : MonoBehaviour
     public void TrickButton()
     {
         m_messageBoxObj.GetComponent<Image>().sprite = m_trollSprite;
-        m_messageBoxText.fontSize = 100;
+        m_messageBoxText.fontSize = 50;
         m_messageBoxText.text = "U mad bro?";
     }
 }
