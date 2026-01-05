@@ -29,7 +29,7 @@ public class DialogueManager : MonoBehaviour
     [Header("Context")]
     [SerializeField] private NpcDefinition npc;
     private TestNPC owningNpc;
-
+    private bool isDSwapFirstAndThird = true;
     private DialogueTree currentTree;
     private DialogueNode currentNode;
 
@@ -134,60 +134,73 @@ public class DialogueManager : MonoBehaviour
                 s.button.onClick.RemoveAllListeners();
             }
         }
+
+
+
+
         var choices = node.choices ?? new List<DialogueChoice>();
         int count = Mathf.Min(choices.Count, choiceSlots.Length);
 
         for (int i = 0; i < count; i++)
         {
-            var slots = choiceSlots[i];
-            var choice = choices[i];
+            var slot = choiceSlots[i];
+            var displayedChoice = choices[i]; // what the player SEES
 
-            if (slots.label)
+            // Show label as usual
+            if (slot.label) slot.label.text = displayedChoice.text ?? string.Empty;
+            if (slot.root) slot.root.SetActive(true);
+
+            if (slot.button)
             {
-                slots.label.text = choice.text ?? string.Empty;
-            }
-            if (slots.root)
-            {
-                slots.root.SetActive(true);
-            }
-            if (slots.button)
-            {
-                slots.button.onClick.AddListener(() => OnChoiceSelected(choice));
+                slot.button.onClick.RemoveAllListeners();
+
+                // But wire to the (maybe swapped) underlying choice
+                int actualIndex = MapIndexWithDefect(i, count);
+                var actualChoice = choices[actualIndex];
+
+                // capture locals to avoid closure gotchas
+                var localChoice = actualChoice;
+
+                slot.button.onClick.AddListener(() =>
+                {
+                    // Actioned choices
+                    if (!string.IsNullOrEmpty(localChoice.action))
+                    {
+                        bool handled = DialogueActionResolver.TryResolve(localChoice, npc, out bool success);
+                        if (handled)
+                        {
+                            var next = GetNode(success ? localChoice.gotoOnSuccess : localChoice.gotoOnFail);
+                            if (next != null) { ShowNode(next); return; }
+                            EndDialogue(); return;
+                        }
+
+                        // Fallback random
+                        bool fallback = Random.value <= localChoice.successChance;
+                        var nextFallback = GetNode(fallback ? localChoice.gotoOnSuccess : localChoice.gotoOnFail);
+                        if (nextFallback != null) { ShowNode(nextFallback); return; }
+                        EndDialogue(); return;
+                    }
+
+                    // Plain goto
+                    if (!string.IsNullOrEmpty(localChoice.gotoNode))
+                    {
+                        var next = GetNode(localChoice.gotoNode);
+                        if (next != null) { ShowNode(next); return; }
+                    }
+
+                    EndDialogue();
+                });
             }
         }
-        if (count == 0)
+
+        // hide extra slots
+        for (int i = count; i < choiceSlots.Length; i++)
         {
-            EndDialogue();
+            var s = choiceSlots[i];
+            if (s.root) s.root.SetActive(false);
+            if (s.button) s.button.onClick.RemoveAllListeners();
         }
-
-        // if (node == null)
-        // {
-        //     Debug.LogError("Dialogue node not found!");
-        //     EndDialogue();
-        //     return;
-        // }
-
-        // currentNode = node;
-        // speakerText.text = node.speaker;
-        // dialogueText.text = node.text;
-
-        // foreach (Transform child in choiceContainer)
-        //     Destroy(child.gameObject);
-        // if (node.choices != null && node.choices.Count > 0)
-        // {
-        //     foreach (DialogueChoice choice in node.choices)
-        //     {
-        //         GameObject button = Instantiate(choiceButtonPrefab, choiceContainer);
-        //         var text = button.GetComponentInChildren<TextMeshProUGUI>();
-        //         text.text = choice.text;
-
-        //         button.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnChoiceSelected(choice));
-        //     }
-        // }
-        // else
-        // {
-        //     EndDialogue();
-        // }
+        if (count == 0) EndDialogue();
     }
 
     private void OnChoiceSelected(DialogueChoice choice)
@@ -292,6 +305,16 @@ public class DialogueManager : MonoBehaviour
         if (byId != null && byId.TryGetValue(id, out var n)) return n;
         // Fallback to the tree's own lookup if you have one
         return currentTree.GetNode(id);
+    }
+    private int MapIndexWithDefect(int displayedIndex, int totalChoices)
+    {
+        if (!isDSwapFirstAndThird) return displayedIndex;
+        if (totalChoices >= 3)
+        {
+            if (displayedIndex == 0) return 2; // button 1 runs choice #3
+            if (displayedIndex == 2) return 0; // button 3 runs choice #1
+        }
+        return displayedIndex;
     }
     public void StartFromTreeStart()
     {
